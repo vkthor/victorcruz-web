@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { tr, ui, url, type Lang } from '../i18n';
+import { inline } from '../utils';
+import { bioLong } from '../data/bio';
+import primerPlano from '../assets/fotos/primer-plano.jpg';
+import guitarra from '../assets/fotos/guitarra-perfil.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+---
+<Base lang={lang} route="bio" person title={tr(ui.nav.bio, lang)}
+  description={es ? 'Biografía del barítono Víctor Cruz: formación, conjuntos con los que canta, papeles como solista, Jácaras del Zéfiro y docencia.' : 'Biography of baritone Víctor Cruz: training, ensembles, solo roles, Jácaras del Zéfiro and teaching.'}>
+  <PageHead kicker={tr(ui.tagline, lang)} title={tr(ui.nav.bio, lang)} />
+  <section class="section">
+    <div class="wrap split split--top">
+      <div class="bio-photos">
+        <figure>
+          <Image src={primerPlano} alt={es ? 'Retrato de Víctor Cruz' : 'Portrait of Víctor Cruz'} widths={[420, 640, 840]} sizes="(max-width: 1000px) 90vw, 420px" quality={80} loading="eager" />
+          <figcaption class="credit">{tr(ui.photo, lang)}: Pablo F. Juárez</figcaption>
+        </figure>
+        <figure>
+          <Image src={guitarra} alt={es ? 'Víctor Cruz con la guitarra barroca' : 'Víctor Cruz with the Baroque guitar'} widths={[420, 640, 840]} sizes="(max-width: 1000px) 90vw, 420px" quality={80} />
+          <figcaption class="credit">{tr(ui.photo, lang)}: Noria Producciones</figcaption>
+        </figure>
+      </div>
+      <div class="prose">
+        {bioLong[lang].map((p) => <p set:html={inline(p)} />)}
+        <p class="btns" style="margin-top:2rem">
+          <a class="btn" href={url('career', lang)}>{tr(ui.nav.career, lang)}</a>
+          <a class="btn" href={url('downloads', lang)}>{es ? 'Descargar biografía y fotos' : 'Download biography and photos'}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .bio-photos { display: grid; gap: 32px; }
+  .bio-photos figure { margin: 0; }
+  @media (max-width: 1000px) { .bio-photos { grid-template-columns: 1fr 1fr; gap: 16px; } .bio-photos :global(img) { max-width: 100%; } }
+</style>

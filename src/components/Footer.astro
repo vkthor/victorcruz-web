@@ -1,0 +1,27 @@
+---
+// Pie: bloque de contacto (ancla #contacto de todas las páginas) y enlaces legales.
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+import { tr, ui, url, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer" id="contacto">
+  <div class="contact">
+    <Logo class="logo" />
+    <div>
+      <h2>{tr(ui.nav.contact, lang)}</h2>
+      <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
+      <p class="soc"><a href={site.instagram} rel="noopener">Instagram</a> · <a href={site.facebook} rel="noopener">Facebook</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© {year} Víctor Cruz</span>
+    <nav aria-label={lang === 'es' ? 'Información' : 'Information'}>
+      <a href={url('downloads', lang)}>{tr(ui.nav.downloads, lang)}</a>
+      <a href={url('legal', lang)}>{tr(ui.nav.legal, lang)}</a>
+      <a href={url('privacy', lang)}>{tr(ui.nav.privacy, lang)}</a>
+    </nav>
+  </div>
+</footer>

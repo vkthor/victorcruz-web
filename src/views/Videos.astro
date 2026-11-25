@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import VideoCard from '../components/VideoCard.astro';
+import OrfeoCard from '../components/OrfeoCard.astro';
+import { tr, ui, url, type Lang } from '../i18n';
+import { site } from '../data/site';
+import { featured, spanish, projectVideos } from '../data/videos';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+---
+<Base lang={lang} route="videos" title={tr(ui.nav.videos, lang)}
+  description={es ? 'Vídeos de Víctor Cruz: Monteverdi, Bach, Händel, Purcell y barroco español, en concierto.' : 'Videos of Víctor Cruz: Monteverdi, Bach, Handel, Purcell and Spanish Baroque, live in concert.'}>
+  <PageHead kicker={tr(ui.tagline, lang)} title={tr(ui.nav.videos, lang)} />
+  <section class="section">
+    <div class="wrap">
+      <div class="vgrid">
+        <OrfeoCard lang={lang} />
+        <div class="vlist">{featured.map((v) => <VideoCard video={v} lang={lang} variant="list" />)}</div>
+      </div>
+      <h2 class="title-sm">{es ? 'Barroco español' : 'Spanish Baroque'}</h2>
+      <div class="vrow">{spanish.map((v) => <VideoCard video={v} lang={lang} />)}</div>
+      <h2 class="title-sm">{tr(ui.projectsTitle, lang)}</h2>
+      <div class="vrow vrow--4">{projectVideos.filter((v) => v.yt !== '5zvM3trAELU').map((v) => <VideoCard video={v} lang={lang} />)}</div>
+      <p class="vnote">{tr(ui.videoConsent, lang)}</p>
+      <p class="btns" style="margin-top:2.4rem">
+        <a class="btn" href={site.youtube} rel="noopener">{es ? 'Canal de YouTube' : 'YouTube channel'}</a>
+        <a class="btn" href={url('beyond', lang)}>{es ? 'Producción audiovisual' : 'Video production'}</a>
+      </p>
+    </div>
+  </section>
+</Base>

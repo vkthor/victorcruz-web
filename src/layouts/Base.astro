@@ -1,0 +1,146 @@
+---
+import '@fontsource/spectral/300.css';
+import '@fontsource/spectral/400.css';
+import '@fontsource/spectral/500.css';
+import '@fontsource/spectral/300-italic.css';
+import '@fontsource/spectral/400-italic.css';
+import '@fontsource-variable/jost';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { routes, tr, ui, type Lang, type RouteKey } from '../i18n';
+import { site } from '../data/site';
+import { bioShort } from '../data/bio';
+import ogDefault from '../assets/og.jpg';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  title?: string;
+  description: string;
+  image?: ImageMetadata;
+  person?: boolean; // añade los datos estructurados de la persona (portada y biografía)
+  noindex?: boolean;
+}
+const { lang, route, title, description, image, person = false, noindex = false } = Astro.props;
+const siteTitle = `Víctor Cruz · ${tr(ui.role, lang)}`;
+const fullTitle = title ? `${title} · Víctor Cruz` : siteTitle;
+const og = await getImage({ src: image ?? ogDefault, width: 1200, format: 'jpg', quality: 82 });
+const canonical = new URL(routes[route][lang], Astro.site);
+const alternates = (['es', 'en'] as Lang[]).map((l) => ({ l, href: new URL(routes[route][l], Astro.site).href }));
+const home = new URL('/', Astro.site).href;
+
+const jsonld = person && {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${home}#person`,
+      name: 'Víctor Cruz',
+      jobTitle: tr(ui.role, lang),
+      description: bioShort[lang],
+      url: home,
+      image: new URL(og.src, Astro.site).href,
+      email: `mailto:${site.email}`,
+      birthPlace: { '@type': 'Place', name: 'Guadix, Granada, España' },
+      nationality: { '@type': 'Country', name: 'España' },
+      knowsAbout: lang === 'es' ? ['Música antigua', 'Música barroca', 'Canto'] : ['Early music', 'Baroque music', 'Singing'],
+      sameAs: site.sameAs,
+    },
+    {
+      '@type': 'MusicGroup',
+      '@id': `${site.jdz}#group`,
+      name: 'Jácaras del Zéfiro',
+      url: site.jdz,
+      founder: { '@id': `${home}#person` },
+    },
+    { '@type': 'WebSite', '@id': `${home}#website`, url: home, name: 'Víctor Cruz', inLanguage: ['es', 'en'], publisher: { '@id': `${home}#person` } },
+  ],
+};
+// Primera visita a la portada en español desde un navegador que no está en español (ni catalán, gallego o euskera):
+// se pasa a la versión inglesa. No afecta a buscadores ni a quien ya eligió idioma con el botón ES · EN.
+const langRedirect = route === 'home' && lang === 'es';
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {langRedirect && (
+      <script is:inline>
+        (function () {
+          try {
+            if (localStorage.getItem('vc-lang')) return;
+            if (/bot|crawl|spider|slurp|lighthouse|preview|facebookexternalhit|whatsapp/i.test(navigator.userAgent)) return;
+            if (document.referrer && new URL(document.referrer).host === location.host) return;
+            var ls = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+            if (!ls.some(function (l) { return /^(es|ca|gl|eu)\b/i.test(l); })) location.replace('/en/');
+          } catch (e) {}
+        })();
+      </script>
+    )}
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical.href} />
+    {alternates.map(({ l, href }) => <link rel="alternate" hreflang={l} href={href} />)}
+    <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f7f3ec" />
+    <meta name="author" content="Víctor Cruz" />
+    <meta property="og:type" content={person ? 'profile' : 'website'} />
+    <meta property="og:site_name" content="Víctor Cruz" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={new URL(og.src, Astro.site).href} />
+    <meta property="og:image:width" content={String(og.attributes.width ?? 1200)} />
+    <meta property="og:image:height" content={String(og.attributes.height ?? 630)} />
+    <meta property="og:image:alt" content={lang === 'es' ? 'Víctor Cruz con tiorba y guitarra barroca' : 'Víctor Cruz with theorbo and Baroque guitar'} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={lang === 'es' ? 'en_GB' : 'es_ES'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">{tr(ui.skip, lang)}</a>
+    <Header lang={lang} route={route} />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+
+    <dialog class="ytbox" data-ytbox aria-label="YouTube">
+      <button class="ytbox__close" type="button" data-ytbox-close aria-label={tr(ui.close, lang)}>×</button>
+      <div class="ytbox__frame" data-ytbox-frame></div>
+    </dialog>
+    <script>
+      // Visor de vídeos: YouTube (youtube-nocookie) sólo se carga al pulsar un vídeo.
+      const box = document.querySelector<HTMLDialogElement>('[data-ytbox]');
+      const frame = box?.querySelector<HTMLElement>('[data-ytbox-frame]');
+      document.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest<HTMLElement>('[data-yt]');
+        if (!b || !box || !frame) return;
+        e.preventDefault();
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0`;
+        iframe.title = b.getAttribute('aria-label') ?? 'YouTube';
+        iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        frame.replaceChildren(iframe);
+        box.showModal();
+      });
+      box?.querySelector('[data-ytbox-close]')?.addEventListener('click', () => box.close());
+      box?.addEventListener('click', (e) => { if (e.target === box) box.close(); });
+      box?.addEventListener('close', () => frame?.replaceChildren());
+    </script>
+    {site.cloudflareToken && (
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token": "${site.cloudflareToken}"}`}></script>
+    )}
+  </body>
+</html>

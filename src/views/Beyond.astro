@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { tr, ui, type Lang } from '../i18n';
+import { inline } from '../utils';
+import { site } from '../data/site';
+import OwnWorkText from '../components/OwnWorkText.astro';
+import { production, ownWork, wookiee, productionIntro, productionClients } from '../data/videos';
+import doble from '../assets/fotos/doble.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const blocks = [
+  {
+    h: { es: 'Voz y radio', en: 'Voice and radio' },
+    items: [
+      { es: 'Radio Clásica (RNE): voz de la sección «Piratas de Pantalla» de *La Canción del Pirata* (2021)', en: 'Radio Clásica (Spanish National Radio): voice of the “Piratas de Pantalla” segment of *La Canción del Pirata* (2021)' },
+      { es: 'Presentador y locutor para el Centro Nacional de Difusión Musical', en: 'Presenter and voice-over for the Centro Nacional de Difusión Musical' },
+      { es: 'Producción, sonido y voz del pódcast [*El Gallinero Real*](https://www.tiktok.com/@elgallinerorealpodcast/video/7458613013956857121) (Intermezzo, Teatro Real, 2024-2025)', en: 'Producer, sound engineer and voice of the podcast [*El Gallinero Real*](https://www.tiktok.com/@elgallinerorealpodcast/video/7458613013956857121) (Intermezzo, Teatro Real, 2024–2025)' },
+    ],
+  },
+  {
+    h: { es: 'Docencia', en: 'Teaching' },
+    items: [
+      { es: 'Profesor de técnica vocal y fonética del [Joven Coro de Andalucía](https://www.instagram.com/reel/Cm4YtCABqNO/) desde 2022', en: 'Vocal technique and diction coach of the [Joven Coro de Andalucía](https://www.instagram.com/reel/Cm4YtCABqNO/) since 2022' },
+      { es: 'Profesor de Canto en Musikex, Escuela Superior de Música de Extremadura (2018-2020)', en: 'Singing teacher at Musikex, Escuela Superior de Música de Extremadura (2018–2020)' },
+      { es: 'Clase magistral en la Florida International University, Miami (2023)', en: 'Masterclass at Florida International University, Miami (2023)' },
+      { es: 'Técnica vocal para el Coro de Jóvenes del País Vasco (2019)', en: 'Vocal technique for the Basque Youth Choir (2019)' },
+      { es: 'Proyectos educativos de la Orquesta y Coro Nacionales de España', en: 'Educational projects of the Spanish National Orchestra and Choir' },
+    ],
+  },
+  {
+    h: { es: 'Idiomas', en: 'Languages' },
+    items: [
+      { es: 'Asesor lingüístico de la Film Symphony Orchestra', en: 'Language coach for the Film Symphony Orchestra' },
+      { es: 'Asesor lingüístico del Coro Nacional de España', en: 'Language coach for the Spanish National Choir' },
+    ],
+  },
+  {
+    h: { es: 'Investigación y transcripción', en: 'Research and transcription' },
+    items: [
+      { es: 'Transcribe desde las fuentes la música antigua hispana que interpreta Jácaras del Zéfiro, con archivos de Barcelona, Burgos, Guatemala y Canet de Mar', en: 'Transcribes from the sources the early Hispanic music performed by Jácaras del Zéfiro, from archives in Barcelona, Burgos, Guatemala and Canet de Mar' },
+      { es: 'Seis estrenos en tiempos modernos en *Avecillas* (Festival Internacional de Arte Sacro de Madrid, 2026)', en: 'Six modern-day premieres in *Avecillas* (Madrid Festival of Sacred Art, 2026)' },
+      { es: 'Adaptación musical de *La Cómica Historia de Don Quijote* (Purcell, Eccles, Courteville) para el Dúo del Zéfiro', en: 'Musical adaptation of *The Comical History of Don Quixote* (Purcell, Eccles, Courteville) for the Dúo del Zéfiro' },
+    ],
+  },
+];
+// Columnas: la tercera reúne Idiomas e Investigación.
+const columns = [[blocks[0]], [blocks[1]], [blocks[2], blocks[3]]];
+---
+<Base lang={lang} route="beyond" title={tr(ui.nav.beyond, lang)}
+  description={es ? 'Víctor Cruz, más allá del canto: producción audiovisual para conjuntos y solistas de música antigua, radio, docencia y asesoría lingüística.' : 'Víctor Cruz beyond singing: video production for early music ensembles and soloists, radio, teaching and language coaching.'}>
+  <PageHead kicker={tr(ui.tagline, lang)} title={tr(ui.nav.beyond, lang)}
+    lead={es ? 'Producción audiovisual, radio, docencia e idiomas.' : 'Video production, radio, teaching and languages.'} />
+
+  <section class="section">
+    <div class="wrap beyond">
+      <figure>
+        <Image src={doble} alt={es ? 'Montaje fotográfico: Víctor Cruz con traje de fantasía y con partitura de Bach' : 'Photo montage: Víctor Cruz in a fancy suit and holding a Bach score'} widths={[480, 720, 1000]} sizes="(max-width: 1000px) 90vw, 520px" quality={80} loading="eager" />
+        <figcaption class="credit">{tr(ui.photo, lang)}: Pablo F. Juárez</figcaption>
+      </figure>
+      <div class="prose">
+        <h2 class="title" style="font-size:clamp(2.1rem,3.3vw,2.85rem);margin-top:0">{es ? 'Producción audiovisual' : 'Video production'}</h2>
+        <p>{tr(productionIntro, lang)} {es
+          ? 'Sabe lo que necesita un músico porque lo es: elige los planos pensando en la partitura y cuida el sonido tanto como la imagen.'
+          : 'Being a musician himself, he knows what musicians need: he chooses shots with the score in mind and takes as much care over the sound as over the image.'}</p>
+        <p><span set:html={inline(tr(productionClients, lang))} /> <OwnWorkText lang={lang} /></p>
+        <p class="encargo">{es ? 'Encargos de vídeo' : 'Video commissions'}: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+      </div>
+    </div>
+    <div class="wrap">
+      <h3 class="title-sm">{es ? 'Encargos recientes' : 'Recent commissions'}</h3>
+      <div class="vrow vrow--4">
+        {production.map((v) => <VideoCard video={v} lang={lang} sizes="(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 300px" />)}
+      </div>
+      <h3 class="title-sm">{es ? 'Trabajos personales' : 'Personal work'}</h3>
+      <div class="vrow vrow--4">
+        {ownWork.map((v) => <VideoCard video={v} lang={lang} sizes="(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 300px" />)}
+      </div>
+      <p class="vnote">{tr(ui.videoConsent, lang)}</p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="cols">
+        {columns.map((col) => (
+          <div class="col-stack">
+            {col.map((b) => (
+              <div>
+                <h3>{tr(b.h, lang)}</h3>
+                <ul>{b.items.map((i) => <li set:html={inline(tr(i, lang))} />)}</ul>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap wook-row">
+      <div>
+        <h2 class="title">{es ? 'Y para reír' : 'And for a laugh'}</h2>
+        <div class="prose">
+          {es ? (
+            <>
+              <p>En el confinamiento de la primavera de 2020, Víctor convirtió el <em>Lamento della ninfa</em> de Monteverdi en el lamento de un wookiee: Monteverdi y Star Wars a la vez.</p>
+              <p>El vídeo corrió por las redes entre músicos y aficionados de medio mundo. La revista alemana <a href="https://www.niusic.de/artikel/chewie-stay-home" rel="noopener">niusic</a> lo puso en el primer puesto de su lista de vídeos de músicos confinados; la francesa <a href="https://www.diapasonmag.fr/a-la-une/un-jour-une-video-monteverdi-chante-star-wars-13365.html" rel="noopener">Diapason</a> le dedicó un artículo en portada, también lo celebró <a href="https://www.causeur.fr/louvreuse-numero-80-spectacle-confinement-178409" rel="noopener">Causeur</a>, y el Early Music Film Festival lo incluyó entre <a href="https://www.youtube.com/playlist?list=PLwvBGoR8JkD-G1bhAhIiwY-GUrDL84orH" rel="noopener">lo mejor del humor de la música antigua</a>. Fue el éxito de la <i lang="en">early music</i> durante el confinamiento.</p>
+            </>
+          ) : (
+            <>
+              <p>During the spring 2020 lockdown, Víctor turned Monteverdi’s <em>Lamento della ninfa</em> into the lament of a wookiee: Monteverdi and Star Wars at once.</p>
+              <p>The video spread across social media among musicians and fans around the world. The German magazine <a href="https://www.niusic.de/artikel/chewie-stay-home" rel="noopener">niusic</a> ranked it first in its list of lockdown musician videos; the French <a href="https://www.diapasonmag.fr/a-la-une/un-jour-une-video-monteverdi-chante-star-wars-13365.html" rel="noopener">Diapason</a> ran a front-page piece on it, <a href="https://www.causeur.fr/louvreuse-numero-80-spectacle-confinement-178409" rel="noopener">Causeur</a> praised it too, and the Early Music Film Festival included it among <a href="https://www.youtube.com/playlist?list=PLwvBGoR8JkD-G1bhAhIiwY-GUrDL84orH" rel="noopener">the best early music comedy</a>. It was the early music hit of the lockdown.</p>
+            </>
+          )}
+        </div>
+      </div>
+      <VideoCard video={wookiee} lang={lang} />
+    </div>
+  </section>
+</Base>
+<style>
+  .col-stack { display: grid; gap: 2.2rem; align-content: start; }
+  .wook-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+  @media (max-width: 760px) { .wook-row { grid-template-columns: 1fr; } }
+</style>

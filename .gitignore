@@ -1,0 +1,5 @@
+# Material privado de trabajo: nunca al repositorio
+_privado/
+node_modules/
+dist/
+.astro/

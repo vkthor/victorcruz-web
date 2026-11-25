@@ -1,0 +1,103 @@
+---
+// Carrusel de críticas: pasa solo cada pocos segundos, con flechas y un punto por crítica.
+// Se para al pasar el ratón o al usar el teclado, y no se mueve solo si el sistema pide reducir el movimiento.
+import { tr, type Lang } from '../i18n';
+import { inline, quote } from '../utils';
+import type { Review } from '../data/press';
+
+interface Props { items: Review[]; lang: Lang; interval?: number }
+const { items, lang, interval = 5000 } = Astro.props;
+const es = lang === 'es';
+const text = (r: Review) => (es ? r.es ?? r.q : r.en ?? r.q);
+---
+<section class="quote-band qs" data-qs data-interval={interval} aria-roledescription={es ? 'carrusel' : 'carousel'} aria-label={es ? 'Críticas' : 'Reviews'}>
+  <div class="qs__track" data-qs-track aria-live="off">
+    {items.map((r, i) => (
+      <figure class:list={['qs__slide', { 'is-active': i === 0 }]} id={`qs-${i}`} role="group" aria-roledescription={es ? 'crítica' : 'review'} aria-label={`${i + 1} / ${items.length}`} aria-hidden={i === 0 ? undefined : 'true'}>
+        <blockquote set:html={quote(inline(text(r)), lang)} />
+        <figcaption>{r.author} · <span>{r.outlet}{r.country && ` (${tr(r.country, lang)})`}</span><small class="qs__about" set:html={inline(tr(r.about, lang))} /></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="qs__nav">
+    <button type="button" class="qs__arrow" data-qs-prev aria-label={es ? 'Crítica anterior' : 'Previous review'}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+    </button>
+    <div class="qs__dots">
+      {items.map((_, i) => (
+        <button type="button" class="qs__dot" data-qs-dot={i} aria-controls={`qs-${i}`} aria-label={`${es ? 'Crítica' : 'Review'} ${i + 1}`} aria-current={i === 0 ? 'true' : undefined}></button>
+      ))}
+    </div>
+    <button type="button" class="qs__arrow" data-qs-next aria-label={es ? 'Crítica siguiente' : 'Next review'}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+    </button>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-qs]').forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>('.qs__slide')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-qs-dot]')];
+    const track = root.querySelector<HTMLElement>('[data-qs-track]');
+    const delay = Number(root.dataset.interval) || 5000;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = 0;
+    let timer: number | undefined;
+    let paused = false;
+
+    const show = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => {
+        s.classList.toggle('is-active', k === i);
+        if (k === i) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+      });
+      dots.forEach((d, k) => (k === i ? d.setAttribute('aria-current', 'true') : d.removeAttribute('aria-current')));
+    };
+    const stop = () => { if (timer) window.clearInterval(timer); timer = undefined; };
+    const start = () => {
+      stop();
+      if (still || paused || slides.length < 2) return;
+      timer = window.setInterval(() => show(i + 1), delay);
+    };
+    // Al navegar a mano, el lector de pantalla anuncia la crítica y el temporizador vuelve a empezar.
+    const go = (n: number) => { if (track) track.setAttribute('aria-live', 'polite'); show(n); start(); };
+
+    root.querySelector('[data-qs-prev]')?.addEventListener('click', () => go(i - 1));
+    root.querySelector('[data-qs-next]')?.addEventListener('click', () => go(i + 1));
+    dots.forEach((d, k) => d.addEventListener('click', () => go(k)));
+    root.addEventListener('mouseenter', () => { paused = true; stop(); });
+    root.addEventListener('mouseleave', () => { paused = false; start(); });
+    root.addEventListener('focusin', () => { paused = true; stop(); });
+    root.addEventListener('focusout', (e) => { if (!root.contains(e.relatedTarget as Node)) { paused = false; start(); } });
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    // Deslizar con el dedo en el móvil
+    let x0: number | null = null;
+    root.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    root.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1);
+      x0 = null;
+    });
+    start();
+  });
+</script>
+
+<style>
+  .qs__track { display: grid; }
+  .qs__slide { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.7s ease, visibility 0s linear 0.7s; display: flex; flex-direction: column; justify-content: center; }
+  .qs__slide.is-active { opacity: 1; visibility: visible; transition: opacity 0.7s ease; }
+  .qs__about { display: block; margin-top: 0.55rem; font-family: var(--serif); font-size: 1.02rem; font-style: italic; letter-spacing: 0; text-transform: none; color: var(--gris); }
+  .qs__about :global(em) { font-style: normal; }
+  .qs__nav { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 2.2rem; }
+  .qs__arrow { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(74, 16, 32, 0.45); background: transparent; color: var(--vino); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+  .qs__arrow:hover { background: var(--vino); border-color: var(--vino); color: var(--marfil); }
+  .qs__arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .qs__dots { display: flex; gap: 4px; }
+  .qs__dot { width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; position: relative; }
+  .qs__dot::before { content: ''; position: absolute; inset: 0; margin: auto; width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--vino); transition: background 0.25s, transform 0.25s; }
+  .qs__dot[aria-current='true']::before { background: var(--vino); transform: scale(1.15); }
+  .qs__dot:hover::before { background: rgba(74, 16, 32, 0.35); }
+  @media (prefers-reduced-motion: reduce) { .qs__slide, .qs__slide.is-active { transition: none; } }
+</style>

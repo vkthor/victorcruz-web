@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { tr, ui, type Lang } from '../i18n';
+import { inline } from '../utils';
+import { site } from '../data/site';
+import { projects } from '../data/projects';
+import { projectVideos, spanish } from '../data/videos';
+import jdzPlaya from '../assets/fotos/jdz-playa.jpg';
+import duo from '../assets/fotos/duo-del-zefiro.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const { jdz, duo: duoP, veladas, cantar } = projects;
+const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === id)!;
+---
+<Base lang={lang} route="projects" title={tr(ui.nav.projects, lang)}
+  description={es ? 'Proyectos de Víctor Cruz: Jácaras del Zéfiro y el Dúo del Zéfiro, Una velada musical en Baden-Baden y El Cantar de las Cuerdas.' : 'Projects by Víctor Cruz: Jácaras del Zéfiro and the Dúo del Zéfiro, A Musical Evening in Baden-Baden and El Cantar de las Cuerdas.'}>
+  <PageHead kicker={tr(ui.tagline, lang)} title={tr(ui.projectsTitle, lang)}
+    lead={es ? 'De la recuperación de la música antigua hispana al Romanticismo alemán.' : 'From the recovery of early Hispanic music to German Romanticism.'} />
+
+  <section class="section" id="jacaras">
+    <div class="wrap proj">
+      <div class="proj__media">
+        <Image src={jdzPlaya} alt={es ? 'Jácaras del Zéfiro con sus instrumentos en la playa' : 'Jácaras del Zéfiro with their instruments on the beach'} widths={[600, 900, 1200]} sizes="(max-width: 1000px) 100vw, 640px" quality={80} />
+        <p class="credit">{tr(ui.photo, lang)}: Domingo Campillo</p>
+        <VideoCard video={vid('HIVEVa-24BA')} lang={lang} />
+      </div>
+      <div class="proj__text">
+        <p class="eyebrow">{tr(jdz.role, lang)}</p>
+        <h2 class="title">{jdz.name}</h2>
+        <div class="prose">{jdz.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
+        <ul class="pquotes">{jdz.quotes.map((q) => <li>{tr(q.q, lang)} <a href={q.url} rel="noopener">{q.src}</a></li>)}</ul>
+        <p class="btns"><a class="btn btn--solid" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="duo">
+    <div class="wrap proj proj--rev">
+      <div class="proj__media">
+        <Image src={duo} alt={es ? 'Víctor Cruz y Juan Carlos de Mulder con guitarra barroca y archilaúd' : 'Víctor Cruz and Juan Carlos de Mulder with Baroque guitar and archlute'} widths={[600, 900, 1200]} sizes="(max-width: 1000px) 100vw, 640px" quality={80} />
+        <VideoCard video={vid(duoP.video)} lang={lang} />
+      </div>
+      <div class="proj__text">
+        <p class="eyebrow">{tr(duoP.role, lang)}</p>
+        <h2 class="title">{duoP.name}</h2>
+        <div class="prose">{duoP.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
+        <p class="btns"><a class="btn" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="baden-baden">
+    <div class="wrap proj">
+      <div class="proj__media"><VideoCard video={vid(veladas.video)} lang={lang} variant="big" /></div>
+      <div class="proj__text">
+        <p class="eyebrow">{tr(veladas.role, lang)}</p>
+        <h2 class="title">{tr(veladas.name, lang)}</h2>
+        <div class="prose">{veladas.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="cantar">
+    <div class="wrap proj proj--rev">
+      <div class="proj__media">
+        <VideoCard video={vid(cantar.video)} lang={lang} variant="big" />
+      </div>
+      <div class="proj__text">
+        <p class="eyebrow">{tr(cantar.role, lang)}</p>
+        <h2 class="title">{cantar.name}</h2>
+        <div class="prose">{cantar.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
+        <p class="btns"><a class="btn" href={cantar.dossier} target="_blank" rel="noopener">{es ? 'Dossier del proyecto (PDF)' : 'Project dossier (PDF, Spanish)'}</a></p>
+      </div>
+    </div>
+    <div class="wrap"><p class="vnote">{tr(ui.videoConsent, lang)}</p></div>
+  </section>
+</Base>
+<style>
+  .proj { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
+  .proj--rev .proj__media { order: 2; }
+  .proj__media { display: grid; gap: 24px; }
+  .proj__media .credit { margin-top: -16px; }
+  .proj .prose p { font-size: 1.15rem; }
+  .pquotes { list-style: none; padding: 0; margin: 1.4rem 0 1.8rem; font: italic 300 1.25rem/1.5 var(--serif); color: var(--vino); }
+  .pquotes a { font: normal 500 0.74rem var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gris); margin-left: 0.4em; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(109, 100, 99, 0.4); }
+  .pquotes a:hover { color: var(--vino); text-decoration-color: currentColor; }
+  @media (max-width: 1000px) { .proj { grid-template-columns: 1fr; } .proj--rev .proj__media { order: 0; } }
+</style>

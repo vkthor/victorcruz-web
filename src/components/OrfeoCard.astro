@@ -1,0 +1,24 @@
+---
+// Orfeo: tarjeta grande. Mientras no esté el vídeo, un marcador «Próximamente».
+import VideoCard from './VideoCard.astro';
+import { orfeo } from '../data/videos';
+import { tr, ui, type Lang } from '../i18n';
+import { inline } from '../utils';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+{orfeo.yt ? (
+  <VideoCard video={orfeo} lang={lang} variant="big" />
+) : (
+  <div class="vcard vcard--big">
+    <div class="placeholder">
+      <small>{tr(ui.comingSoon, lang)}</small>
+      <b>Orfeo</b>
+      <em>Monteverdi · Los Músicos de Su Alteza</em>
+    </div>
+    <span class="vtext">
+      <span class="vtitle" set:html={inline(orfeo.title)} />
+      <span class="vsub">{lang === 'es' ? 'Fragmentos · vídeo en preparación' : 'Highlights · video in preparation'}</span>
+    </span>
+  </div>
+)}

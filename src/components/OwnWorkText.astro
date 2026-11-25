@@ -1,0 +1,13 @@
+---
+// Frase sobre trabajos propios: sólo el documental (abre en el visor).
+import { tr, ui, type Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const play = tr(ui.play, lang);
+---
+{es ? (
+  <>Suyo es también el documental <a class="linkbtn" href="https://www.youtube.com/watch?v=Is-gSN_Eh0k" data-yt="Is-gSN_Eh0k" aria-label={`${play}: Una velada musical en Baden-Baden`}><em>Una velada musical en Baden-Baden</em></a>.</>
+) : (
+  <>He also made the documentary <a class="linkbtn" href="https://www.youtube.com/watch?v=Is-gSN_Eh0k" data-yt="Is-gSN_Eh0k" aria-label={`${play}: A Musical Evening in Baden-Baden`}><em>A Musical Evening in Baden-Baden</em></a>.</>
+)}

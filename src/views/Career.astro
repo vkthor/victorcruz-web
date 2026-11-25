@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { tr, ui, type Lang } from '../i18n';
+import { inline } from '../utils';
+import { career, repertoire } from '../data/career';
+import { ensemblesHtml } from '../data/bio';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const detail = (w?: string, p?: string) => [w, p].filter(Boolean).join(' · ');
+---
+<Base lang={lang} route="career" title={tr(ui.nav.career, lang)}
+  description={es ? 'Trayectoria de Víctor Cruz: papeles de ópera y oratorio, conjuntos, directores y escenarios, año por año, y repertorio.' : 'Career of Víctor Cruz: opera and oratorio roles, ensembles, conductors and venues, year by year, and repertoire.'}>
+  <PageHead kicker={tr(ui.tagline, lang)} title={tr(ui.nav.career, lang)}
+    lead={es ? 'Una selección de papeles y conciertos, año por año.' : 'A selection of roles and concerts, year by year.'} />
+  <section class="section">
+    <div class="wrap">
+      {career.map((y) => (
+        <div class="year">
+          <h2>{y.year}</h2>
+          <ul>
+            {y.items.map((it) => (
+              <li>
+                <span class="w" set:html={inline(tr(it.what, lang))} />
+                <span class="d" set:html={inline(detail(tr(it.with, lang), it.where ? tr(it.where, lang) : undefined))} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+  <section class="section section--alt" id="repertorio">
+    <div class="wrap">
+      <h2 class="title">{es ? 'Selección de repertorio' : 'Selected repertoire'}</h2>
+      <div class="cols" style="margin-top:2rem">
+        {repertoire.map((g) => (
+          <div>
+            <h3>{tr(g.title, lang)}</h3>
+            <ul>{g.items.map((i) => <li set:html={inline(tr(i, lang))} />)}</ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="names">
+    <h2>{es ? 'Ha cantado con' : 'He has sung with'}</h2>
+    <p set:html={ensemblesHtml(lang)} />
+  </section>
+</Base>

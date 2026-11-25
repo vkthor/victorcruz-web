@@ -1,0 +1,80 @@
+---
+// Aviso legal (LSSI) y política de privacidad.
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { site } from '../data/site';
+import { tr, type Lang } from '../i18n';
+
+interface Props { lang: Lang; kind: 'legal' | 'privacy' }
+const { lang, kind } = Astro.props;
+const o = site.owner;
+const analytics = Boolean(site.cloudflareToken);
+const title = kind === 'legal' ? { es: 'Aviso legal', en: 'Legal notice' } : { es: 'Privacidad', en: 'Privacy' };
+---
+<Base lang={lang} route={kind} title={tr(title, lang)} description={tr(title, lang)}>
+  <PageHead title={tr(title, lang)} />
+  <section class="section">
+    <div class="wrap narrow prose">
+      {kind === 'legal' && lang === 'es' && (
+        <>
+          <p>En cumplimiento de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI), se informa de que el titular de este sitio web, <strong>{site.domain}</strong>, es:</p>
+          <ul>
+            <li>Titular: {o.name}</li>
+            <li>NIF: {o.nif}</li>
+            <li>Correo electrónico: <a href={`mailto:${o.email}`}>{o.email}</a></li>
+          </ul>
+          <h2>Propiedad intelectual</h2>
+          <p>Los textos, fotografías, vídeos, logotipos y demás contenidos de esta web pertenecen a su titular o a sus autores, citados en cada caso, y no pueden reproducirse sin permiso, salvo los materiales de la sección de prensa y descargas para la difusión de conciertos, citando a su autor. Las críticas citadas pertenecen a sus medios y autores.</p>
+          <h2>Enlaces</h2>
+          <p>Esta web enlaza con páginas de terceros (medios, conjuntos, redes sociales) sobre cuyos contenidos el titular no tiene control ni responsabilidad.</p>
+        </>
+      )}
+      {kind === 'legal' && lang === 'en' && (
+        <>
+          <p>In accordance with Spanish Law 34/2002 on information society services and e-commerce (LSSI), the owner of this website, <strong>{site.domain}</strong>, is:</p>
+          <ul>
+            <li>Owner: {o.name}</li>
+            <li>Tax ID (NIF): {o.nif}</li>
+            <li>Email: <a href={`mailto:${o.email}`}>{o.email}</a></li>
+          </ul>
+          <h2>Intellectual property</h2>
+          <p>The texts, photographs, videos, logos and other contents of this website belong to its owner or to their authors, credited in each case, and may not be reproduced without permission, except for the press kit materials used to promote concerts, crediting their authors. Quoted reviews belong to their publications and authors.</p>
+          <h2>Links</h2>
+          <p>This website links to third-party pages (media, ensembles, social networks) whose contents the owner neither controls nor is responsible for.</p>
+        </>
+      )}
+      {kind === 'privacy' && lang === 'es' && (
+        <>
+          <h2>Sin cookies</h2>
+          <p>Esta web no usa cookies ni publicidad. Las tipografías y las imágenes se sirven desde la propia web.</p>
+          {analytics && (
+            <>
+              <h2>Estadísticas de visitas</h2>
+              <p>Para saber cuántas visitas recibe la web y desde dónde llegan, se usa Cloudflare Web Analytics, que no usa cookies, no identifica a quien visita la web ni guarda su dirección IP.</p>
+            </>
+          )}
+          <h2>Vídeos</h2>
+          <p>Los vídeos de YouTube no se cargan hasta que pulsas uno. A partir de ese momento se cargan desde youtube-nocookie.com, y YouTube (Google) puede tratar datos según su propia política de privacidad.</p>
+          <h2>Si escribes</h2>
+          <p>Si escribes por correo electrónico, tus datos se usarán sólo para responderte y gestionar lo que pidas, y no se cederán a nadie. El responsable es {o.name} ({o.email}). Puedes pedir en cualquier momento acceder a tus datos, rectificarlos o suprimirlos escribiendo a esa dirección y, si lo consideras necesario, reclamar ante la Agencia Española de Protección de Datos (aepd.es).</p>
+        </>
+      )}
+      {kind === 'privacy' && lang === 'en' && (
+        <>
+          <h2>No cookies</h2>
+          <p>This website uses no cookies or advertising. Fonts and images are served from the website itself.</p>
+          {analytics && (
+            <>
+              <h2>Visitor statistics</h2>
+              <p>To know how many visits the website receives and where they come from, it uses Cloudflare Web Analytics, which sets no cookies, does not identify visitors and does not store their IP address.</p>
+            </>
+          )}
+          <h2>Videos</h2>
+          <p>YouTube videos are not loaded until you press one. From then on they load from youtube-nocookie.com, and YouTube (Google) may process data under its own privacy policy.</p>
+          <h2>If you write</h2>
+          <p>If you write by email, your data will be used only to reply and handle your request, and will not be shared with anyone. The data controller is {o.name} ({o.email}). You may ask at any time to access, correct or delete your data by writing to that address and, if you deem it necessary, lodge a complaint with the Spanish Data Protection Agency (aepd.es).</p>
+        </>
+      )}
+    </div>
+  </section>
+</Base>

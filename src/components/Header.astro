@@ -1,0 +1,103 @@
+---
+import Logo from './Logo.astro';
+import { nav, routes, tr, ui, url, type Lang, type RouteKey } from '../i18n';
+
+interface Props { lang: Lang; route: RouteKey }
+const { lang, route } = Astro.props;
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const current = routes[route][lang];
+---
+<header class="site-header" data-header>
+  <div class="bar">
+    <a class="brand" href={url('home', lang)} aria-label={`Víctor Cruz, ${tr(ui.role, lang).toLowerCase()}`}>
+      <Logo class="brand__logo" />
+    </a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-menu-btn>
+      <span class="menu-btn__lines" aria-hidden="true"></span>
+      <span class="sr-only">{tr(ui.menu, lang)}</span>
+    </button>
+    <nav id="menu" class="menu" aria-label={tr(ui.menu, lang)} data-menu>
+      <ul>
+        {nav.map((key) => (
+          <li><a href={url(key, lang)} aria-current={current === routes[key][lang] ? 'page' : undefined}>{tr(ui.nav[key], lang)}</a></li>
+        ))}
+        <li><a href="#contacto" data-close-menu>{tr(ui.nav.contact, lang)}</a></li>
+      </ul>
+      <p class="lang">
+        <span class="lang__cur" aria-hidden="true">{lang.toUpperCase()}</span>
+        <span aria-hidden="true"> · </span>
+        <a href={routes[route][other]} hreflang={other} lang={other} data-set-lang={other}>
+          <span aria-hidden="true">{tr(ui.otherLangShort, lang)}</span>
+          <span class="sr-only">{tr(ui.otherLang, lang)}</span>
+        </a>
+      </p>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const setOpen = (open: boolean) => {
+    if (open && header) menu?.style.setProperty('--menu-top', `${Math.round(header.getBoundingClientRect().bottom)}px`);
+    btn?.setAttribute('aria-expanded', String(open));
+    menu?.classList.toggle('is-open', open);
+    document.body.classList.toggle('menu-open', open);
+  };
+  btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  document.querySelectorAll('[data-close-menu]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  // El cambio de idioma se recuerda (la portada en español no vuelve a redirigir).
+  document.querySelectorAll<HTMLAnchorElement>('[data-set-lang]').forEach((a) =>
+    a.addEventListener('click', () => { try { localStorage.setItem('vc-lang', a.dataset.setLang ?? ''); } catch {} }),
+  );
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 30);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--papel); border-bottom: 1px solid var(--linea); transition: box-shadow 0.25s; }
+  .site-header.is-scrolled { box-shadow: 0 8px 22px -18px rgba(29, 23, 24, 0.6); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 10px var(--gutter); max-width: 1440px; margin-inline: auto; }
+  .brand { display: block; color: var(--vino); flex-shrink: 0; line-height: 0; }
+  .brand :global(.brand__logo) { height: 88px; width: auto; transition: height 0.25s ease; }
+  .is-scrolled .brand :global(.brand__logo) { height: 58px; }
+  .menu { display: flex; align-items: center; gap: 2rem; }
+  .menu ul { display: flex; gap: 1.6rem; list-style: none; margin: 0; padding: 0; }
+  .menu a, .lang { font-family: var(--sans); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; color: var(--vino); white-space: nowrap; }
+  .menu ul a { display: inline-block; padding: 0.45rem 0; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+  .menu ul a:hover, .menu ul a[aria-current='page'] { border-color: var(--vino); }
+  .lang { margin: 0; color: var(--gris); }
+  .lang__cur { color: var(--vino); }
+  .lang a { color: var(--gris); padding: 0.45rem 0.1rem; }
+  .lang a:hover { color: var(--vino); }
+  .menu-btn { display: none; }
+
+  @media (max-width: 1240px) {
+    .brand :global(.brand__logo) { height: 64px; }
+    .is-scrolled .brand :global(.brand__logo) { height: 50px; }
+    .menu-btn {
+      display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+      border: 1px solid var(--vino); border-radius: 50%; background: transparent; cursor: pointer; color: var(--vino);
+    }
+    .menu-btn__lines, .menu-btn__lines::before, .menu-btn__lines::after { display: block; width: 18px; height: 1.5px; background: currentColor; position: relative; transition: transform 0.2s; }
+    .menu-btn__lines::before, .menu-btn__lines::after { content: ''; position: absolute; left: 0; }
+    .menu-btn__lines::before { top: -6px; }
+    .menu-btn__lines::after { top: 6px; }
+    .menu-btn[aria-expanded='true'] .menu-btn__lines { background: transparent; }
+    .menu-btn[aria-expanded='true'] .menu-btn__lines::before { transform: translateY(6px) rotate(45deg); }
+    .menu-btn[aria-expanded='true'] .menu-btn__lines::after { transform: translateY(-6px) rotate(-45deg); }
+    .menu {
+      position: fixed; inset: var(--menu-top, 85px) 0 0 0; background: var(--papel); flex-direction: column; align-items: stretch; justify-content: flex-start;
+      padding: 1.5rem var(--gutter) 2.5rem; gap: 1.6rem; transform: translateX(100%); visibility: hidden;
+      transition: transform 0.28s ease, visibility 0s linear 0.28s; overflow-y: auto; border-top: 1px solid var(--linea);
+    }
+    .menu.is-open { transform: none; visibility: visible; transition: transform 0.28s ease; }
+    .menu ul { flex-direction: column; gap: 0; }
+    .menu ul a { display: block; font-family: var(--serif); font-size: 1.55rem; font-weight: 300; letter-spacing: 0; text-transform: none; padding: 0.7rem 0; border-bottom: 1px solid var(--linea); }
+    .menu ul a[aria-current='page'] { border-color: var(--linea); font-style: italic; }
+    .lang { font-size: 0.95rem; }
+  }
+  :global(body.menu-open) { overflow: hidden; }
+</style>

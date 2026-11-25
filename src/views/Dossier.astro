@@ -1,0 +1,151 @@
+---
+// Dossier imprimible (A4). Se convierte en /dossieresp.pdf y /dossiereng.pdf con «npm run dossier».
+import '@fontsource/spectral/300.css';
+import '@fontsource/spectral/400.css';
+import '@fontsource/spectral/300-italic.css';
+import '@fontsource/spectral/400-italic.css';
+import '@fontsource-variable/jost';
+import { Image } from 'astro:assets';
+import Logo from '../components/Logo.astro';
+import { tr, ui, type Lang } from '../i18n';
+import { inline, quote } from '../utils';
+import { site } from '../data/site';
+import { bioLong, ensemblesHtml, lead } from '../data/bio';
+import { byId } from '../data/press';
+import { projects } from '../data/projects';
+import tiorba from '../assets/fotos/tiorba.jpg';
+import primerPlano from '../assets/fotos/primer-plano.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const picks = ['galtier', 'diariovasco', 'tarin', 'moreno', 'guada', 'ruiz', 'andueza', 'okada'].map(byId);
+const qt = (r: { q: string; en?: string; es?: string }) => (es ? r.es ?? r.q : r.en ?? r.q);
+const web = 'www.victorcruz.es';
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex" />
+  <title>{es ? 'Víctor Cruz, barítono · Dossier' : 'Víctor Cruz, baritone · Press kit'}</title>
+</head>
+<body>
+  <!-- 1. Portada -->
+  <section class="page cover">
+    <div class="cover__top">
+      <Logo class="cover__logo" title="Víctor Cruz" />
+      <div>
+        <p class="eyebrow">{tr(ui.tagline, lang)}</p>
+        <p class="cover__lead">{tr(lead, lang)}</p>
+      </div>
+    </div>
+    <figure class="cover__photo">
+      <Image src={tiorba} alt="" widths={[1478]} sizes="120mm" quality={90} format="jpg" loading="eager" />
+      <figcaption>{tr(ui.photo, lang)}: Noria Producciones</figcaption>
+    </figure>
+    <footer class="foot">{web} · {site.email}</footer>
+  </section>
+
+  <!-- 2. Biografía -->
+  <section class="page bio">
+    <h1>{tr(ui.nav.bio, lang)}</h1>
+    <div class="bio__grid">
+      <figure>
+        <Image src={primerPlano} alt="" widths={[900]} sizes="48mm" quality={88} format="jpg" loading="eager" />
+        <figcaption>{tr(ui.photo, lang)}: Pablo F. Juárez</figcaption>
+      </figure>
+      <div class="bio__text">{bioLong[lang].map((p) => <p set:html={inline(p)} />)}</div>
+    </div>
+    <div class="names">
+      <h2>{es ? 'Ha cantado con' : 'He has sung with'}</h2>
+      <p set:html={ensemblesHtml(lang)} />
+    </div>
+    <footer class="foot">{web} · {site.email}</footer>
+  </section>
+
+  <!-- 3. Prensa y proyectos -->
+  <section class="page press">
+    <h1>{tr(ui.nav.press, lang)}</h1>
+    <div class="quotes">
+      {picks.map((r) => (
+        <figure>
+          <blockquote>
+            <p set:html={quote(inline(qt(r)), lang)} />
+            {r.id === 'tarin' && r.more && <p set:html={quote(inline(es ? r.more[0].q : r.more[0].en ?? r.more[0].q), lang)} />}
+          </blockquote>
+          <figcaption>{r.author} · <b>{r.outlet}</b>{r.country && ` (${tr(r.country, lang)})`}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <h1 class="h-proj">{tr(ui.projectsTitle, lang)}</h1>
+    <div class="proj">
+      <div><small>{tr(projects.jdz.role, lang)}</small><b>{projects.jdz.name}</b><span set:html={inline(tr(projects.jdz.short, lang))} /><a class="go" href={es ? site.jdz : site.jdzEn}>jacarasdelzefiro.es</a></div>
+      <div><b>{projects.duo.name}</b><span set:html={inline(tr(projects.duo.short, lang))} /><a class="go" href={`https://www.youtube.com/watch?v=${projects.duo.video}`}>{es ? 'Vídeo: Purcell, «Don Quixote»' : 'Video: Purcell, “Don Quixote”'}</a></div>
+      <div><b>{tr(projects.veladas.name, lang)}</b><span set:html={inline(tr(projects.veladas.short, lang))} /><a class="go" href={`https://www.youtube.com/watch?v=${projects.veladas.video}`}>{es ? 'Ver el documental' : 'Watch the documentary'}</a></div>
+      <div><b>{projects.cantar.name}</b><span set:html={inline(tr(projects.cantar.short, lang))} /><a class="go" href={`https://www.youtube.com/watch?v=${projects.cantar.video}`}>{es ? 'Vídeo: Bach, «Stürze zu Boden»' : 'Video: Bach, “Stürze zu Boden”'}</a><a class="go" href={`https://www.victorcruz.es${projects.cantar.dossier}`}>{es ? 'Dossier del proyecto' : 'Project dossier (Spanish)'}</a></div>
+    </div>
+    <div class="contact">
+      <Logo class="contact__logo" />
+      <div>
+        <p class="eyebrow">{tr(ui.nav.contact, lang)}</p>
+        <p class="contact__mail">{site.email}</p>
+        <p class="contact__web">{web} · Instagram & Facebook: @victorcruzbaritono</p>
+        <p class="contact__more">{es ? 'Vídeos, trayectoria completa, fotos en alta resolución y biografías en la web.' : 'Videos, full career, high-resolution photos and biographies on the website.'}</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+
+<style is:global>
+  @page { size: A4; margin: 0; }
+  :root { --vino: #4a1020; --marfil: #f1e3c8; --papel: #f7f3ec; --crema: #efe7da; --tinta: #1d1718; --gris: #6d6463; --linea: #ddd2c1; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #888; }
+  body { font: 300 10.4pt/1.55 'Spectral', Georgia, serif; color: var(--tinta); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { position: relative; width: 210mm; height: 297mm; margin: 0 auto 8mm; padding: 20mm 20mm 24mm; background: var(--papel); overflow: hidden; break-after: page; }
+  @media print { html, body { background: none; } .page { margin: 0; } }
+  .eyebrow { font: 500 7.6pt 'Jost Variable', sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--vino); margin: 0 0 3mm; }
+  h1 { font: 300 25pt/1.1 'Spectral', serif; color: var(--vino); margin: 0 0 8mm; }
+  figcaption { font: 400 6.4pt 'Jost Variable', sans-serif; letter-spacing: 0.05em; color: var(--gris); margin-top: 1.5mm; }
+  em { font-style: italic; }
+  .foot { position: absolute; left: 20mm; right: 20mm; bottom: 12mm; font: 400 7.4pt 'Jost Variable', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vino); border-top: 0.3mm solid var(--linea); padding-top: 3mm; }
+
+  .cover__top { display: grid; grid-template-columns: 52mm 1fr; gap: 10mm; align-items: center; color: var(--vino); }
+  .cover__logo { width: 52mm; height: auto; display: block; }
+  .cover__lead { font-size: 12.5pt; line-height: 1.5; margin: 0; color: var(--tinta); }
+  .cover__photo { margin: 12mm auto 0; width: fit-content; }
+  .cover__photo img { display: block; height: 178mm; width: auto; }
+  .cover__photo figcaption { text-align: right; }
+
+  .bio__grid { display: grid; grid-template-columns: 48mm 1fr; gap: 8mm; align-items: start; }
+  .bio__grid figure { margin: 0; }
+  .bio__grid img { width: 48mm; height: auto; display: block; }
+  .bio__text p { margin: 0 0 2.2mm; font-size: 9.3pt; line-height: 1.48; }
+  .names { margin-top: 5mm; padding-top: 4mm; border-top: 0.3mm solid var(--linea); text-align: center; }
+  .names h2 { font: 500 7.4pt 'Jost Variable', sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--vino); margin: 0 0 2.5mm; }
+  .names p { font-size: 10.6pt; line-height: 1.6; margin: 0; }
+  .names a { color: inherit; text-decoration: none; }
+  .names i { font-style: normal; color: var(--vino); opacity: 0.45; padding: 0 0.3em; }
+
+  .quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 9mm; }
+  .quotes figure { margin: 0; }
+  .quotes blockquote { margin: 0; font: italic 300 10pt/1.42 'Spectral', serif; }
+  .quotes blockquote p { margin: 0; }
+  .quotes blockquote p + p { margin-top: 1.4mm; }
+  .quotes blockquote em { font-style: normal; }
+  .quotes figcaption { font-size: 6.8pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--vino); margin-top: 1.6mm; }
+  .quotes figcaption b { font-weight: 500; }
+  .h-proj { margin-top: 8mm; }
+  .proj { display: grid; grid-template-columns: 1.15fr 1fr 1fr 1fr; gap: 5.5mm; font-size: 8.9pt; line-height: 1.42; }
+  .proj small { display: block; font: 500 6.4pt 'Jost Variable', sans-serif; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 1mm; }
+  .proj b { display: block; font-weight: 400; font-size: 12pt; color: var(--vino); margin-bottom: 1.5mm; line-height: 1.2; }
+  .proj .go { display: block; text-decoration: none; font: normal 500 6.8pt 'Jost Variable', sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vino); margin-top: 2mm; }
+  .contact { position: absolute; left: 0; right: 0; bottom: 0; height: 50mm; background: var(--vino); color: var(--marfil); display: flex; gap: 10mm; align-items: center; justify-content: center; padding: 0 20mm; }
+  .contact__logo { height: 30mm; width: auto; color: var(--marfil); }
+  .contact .eyebrow { color: var(--marfil); opacity: 0.8; }
+  .contact__mail { font-size: 17pt; margin: 0 0 1.5mm; }
+  .contact__web { font: 400 7.6pt 'Jost Variable', sans-serif; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 2mm; }
+  .contact__more { font-size: 9pt; margin: 0; opacity: 0.85; }
+</style>

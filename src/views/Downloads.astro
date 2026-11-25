@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { routes, tr, ui, type Lang } from '../i18n';
+import { inline, plain } from '../utils';
+import { bioLong, bioMedium, bioShort } from '../data/bio';
+import tiorba from '../assets/fotos/tiorba.jpg';
+import guitarraAzul from '../assets/fotos/guitarra-azul.jpg';
+import guitarraPerfil from '../assets/fotos/guitarra-perfil.jpg';
+import primerPlano from '../assets/fotos/primer-plano.jpg';
+import corbata from '../assets/fotos/corbata.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const es = lang === 'es';
+const other: Lang = es ? 'en' : 'es';
+const bios = [
+  { id: 'larga', h: { es: 'Biografía completa', en: 'Full biography' }, n: '', paras: bioLong[lang] },
+  { id: 'media', h: { es: 'Biografía media', en: 'Medium biography' }, n: '', paras: [bioMedium[lang]] },
+  { id: 'corta', h: { es: 'Biografía corta', en: 'Short biography' }, n: '', paras: [bioShort[lang]] },
+].map((b) => ({ ...b, n: String(b.paras.join(' ').split(/\s+/).length) }));
+const photos = [
+  { img: tiorba, file: 'victor-cruz-tiorba-y-guitarra_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con tiorba y guitarra barroca', en: 'With theorbo and Baroque guitar' } },
+  { img: primerPlano, file: 'victor-cruz-retrato_Pablo-F-Juarez.jpg', by: 'Pablo F. Juárez', alt: { es: 'Retrato', en: 'Portrait' } },
+  { img: guitarraAzul, file: 'victor-cruz-guitarra_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con guitarra barroca', en: 'With Baroque guitar' } },
+  { img: corbata, file: 'victor-cruz-traje_Pablo-F-Juarez.jpg', by: 'Pablo F. Juárez', alt: { es: 'Retrato de cuerpo medio', en: 'Half-length portrait' } },
+  { img: guitarraPerfil, file: 'victor-cruz-guitarra-perfil_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con guitarra barroca, de perfil', en: 'With Baroque guitar, profile' } },
+];
+---
+<Base lang={lang} route="downloads" title={tr(ui.nav.downloads, lang)}
+  description={es ? 'Biografías de Víctor Cruz en tres extensiones, fotos en alta resolución y dossier para prensa y programadores.' : 'Biographies of Víctor Cruz in three lengths, high-resolution photos and press kit for press and presenters.'}>
+  <PageHead kicker={es ? 'Para prensa y programadores' : 'For press and presenters'} title={tr(ui.nav.downloads, lang)}
+    lead={es ? 'Biografías, fotos en alta resolución y dossier. Las fotos pueden usarse para la difusión de conciertos citando a su autor.' : 'Biographies, high-resolution photos and press kit. Photos may be used to promote concerts, crediting the photographer.'} />
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="title">Dossier</h2>
+      <p class="btns" style="margin:1.4rem 0 0">
+        <a class="btn btn--solid" href="/dossieresp.pdf" download>Dossier (PDF, español)</a>
+        <a class="btn" href="/dossiereng.pdf" download>Press kit (PDF, English)</a>
+      </p>
+      <p class="other" style="margin-top:1.2rem">{es ? 'Proyectos:' : 'Projects:'} <a href="/dossieres/el-cantar-de-las-cuerdas.pdf" target="_blank" rel="noopener">El Cantar de las Cuerdas{es ? '' : ' (Spanish)'}</a></p>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="fotos">
+    <div class="wrap">
+      <h2 class="title">{es ? 'Fotos' : 'Photos'}</h2>
+      <div class="photos">
+        {photos.map((p) => (
+          <figure>
+            <a href={`/descargas/fotos/${p.file}`} download>
+              <Image src={p.img} alt={`Víctor Cruz. ${tr(p.alt, lang)}`} widths={[300, 500]} sizes="(max-width: 760px) 50vw, 240px" quality={74} />
+            </a>
+            <figcaption>{tr(ui.photo, lang)}: {p.by}<br /><a class="more" href={`/descargas/fotos/${p.file}`} download>{es ? 'Descargar JPG' : 'Download JPG'}</a></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="biografias">
+    <div class="wrap narrow">
+      <h2 class="title">{es ? 'Biografías' : 'Biographies'}</h2>
+      <p class="other">{es ? 'También en ' : 'Also in '}<a href={`${routes.downloads[other]}#biografias`} hreflang={other}>{tr(ui.otherLang, lang)}</a>.</p>
+      {bios.map((b) => (
+        <article class="biobox">
+          <header>
+            <h3>{tr(b.h, lang)} <span>· {b.n} {es ? 'palabras' : 'words'}</span></h3>
+            <button type="button" class="copy" data-copy={`bio-${b.id}`}>{es ? 'Copiar' : 'Copy'}</button>
+          </header>
+          <div class="prose" id={`bio-${b.id}`} data-plain={b.paras.map(plain).join('\n\n')}>
+            {b.paras.map((p) => <p set:html={inline(p)} />)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const el = document.getElementById(btn.dataset.copy ?? '');
+      if (!el) return;
+      const label = btn.textContent;
+      try {
+        await navigator.clipboard.writeText(el.dataset.plain ?? el.innerText);
+        btn.textContent = document.documentElement.lang === 'es' ? 'Copiada' : 'Copied';
+      } catch {
+        btn.textContent = '—';
+      }
+      setTimeout(() => (btn.textContent = label), 1800);
+    });
+  });
+</script>
+<style>
+  .photos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-top: 2rem; }
+  .photos figure { margin: 0; }
+  .photos img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+  .photos figcaption { font-family: var(--sans); font-size: 0.8rem; color: var(--gris); margin-top: 0.6rem; line-height: 1.5; }
+  .photos .more { font-size: 0.72rem; }
+  .other { font-family: var(--sans); font-size: 0.9rem; color: var(--gris); }
+  .other a { color: var(--vino); }
+  .biobox { margin-top: 2.4rem; padding-top: 1.4rem; border-top: 1px solid var(--linea); }
+  .biobox header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
+  .biobox h3 { font-size: 1.5rem; color: var(--vino); }
+  .biobox h3 span { font-family: var(--sans); font-size: 0.8rem; color: var(--gris); letter-spacing: 0.04em; }
+  .biobox .prose { font-size: 1.08rem; }
+  .copy { font-family: var(--sans); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vino); background: none; border: 1px solid var(--vino); padding: 0.5rem 0.9rem; cursor: pointer; flex-shrink: 0; }
+  .copy:hover { background: var(--vino); color: var(--marfil); }
+  @media (max-width: 1000px) { .photos { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .photos { grid-template-columns: repeat(2, 1fr); } }
+</style>

@@ -1,0 +1,12 @@
+---
+// Logotipo vectorial en línea; toma el color del texto (currentColor).
+import raw from '../assets/marca/logo-vino.svg?raw';
+interface Props { class?: string; title?: string }
+const { class: cls = '', title } = Astro.props;
+const svg = raw
+  .replace(/<title>.*?<\/title>/, '')
+  .replace(/ role="img" aria-label="[^"]*"/, '')
+  .replace('fill="#4a1020"', 'fill="currentColor"')
+  .replace('<svg ', `<svg class="${cls}" ${title ? `role="img" aria-label="${title}"` : 'aria-hidden="true" focusable="false"'} `);
+---
+<Fragment set:html={svg} />

@@ -1,0 +1,25 @@
+---
+// Tarjeta de vídeo: no carga nada de YouTube hasta que se pulsa (se abre en el visor).
+import { Image } from 'astro:assets';
+import type { Video } from '../data/videos';
+import { thumb } from '../data/thumbs';
+import { tr, ui, type Lang } from '../i18n';
+import { inline, plain } from '../utils';
+
+interface Props { video: Video; lang: Lang; variant?: 'big' | 'card' | 'list'; sizes?: string }
+const { video, lang, variant = 'card', sizes } = Astro.props;
+const title = tr(video.title, lang);
+const widths = variant === 'list' ? [260, 400] : [400, 640, 960, 1280];
+const sz = sizes ?? (variant === 'list' ? '172px' : variant === 'big' ? '(max-width: 1000px) 100vw, 760px' : '(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 420px');
+---
+<button type="button" class={`vcard vcard--${variant}`} data-yt={video.yt} aria-label={`${tr(ui.play, lang)}: ${plain(title)}`}>
+  <span class="vthumb">
+    <Image src={thumb(video.yt)} alt="" widths={widths} sizes={sz} format="webp" quality={72} />
+    <span class="vplay" aria-hidden="true"></span>
+  </span>
+  <span class="vtext">
+    <span class="vtitle" set:html={inline(title)} />
+    <span class="vsub" set:html={inline(tr(video.sub, lang))} />
+    {video.own && <span class="vown">{tr(video.credit ?? ui.ownRecording, lang)}</span>}
+  </span>
+</button>
