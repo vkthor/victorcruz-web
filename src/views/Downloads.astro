@@ -7,7 +7,6 @@ import { inline, plain } from '../utils';
 import { bioLong, bioMedium, bioShort } from '../data/bio';
 import tiorba from '../assets/fotos/tiorba.jpg';
 import guitarraAzul from '../assets/fotos/guitarra-azul.jpg';
-import guitarraPerfil from '../assets/fotos/guitarra-perfil.jpg';
 import primerPlano from '../assets/fotos/primer-plano.jpg';
 import corbata from '../assets/fotos/corbata.jpg';
 
@@ -25,7 +24,6 @@ const photos = [
   { img: primerPlano, file: 'victor-cruz-retrato_Pablo-F-Juarez.jpg', by: 'Pablo F. Juárez', alt: { es: 'Retrato', en: 'Portrait' } },
   { img: guitarraAzul, file: 'victor-cruz-guitarra_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con guitarra barroca', en: 'With Baroque guitar' } },
   { img: corbata, file: 'victor-cruz-traje_Pablo-F-Juarez.jpg', by: 'Pablo F. Juárez', alt: { es: 'Retrato de cuerpo medio', en: 'Half-length portrait' } },
-  { img: guitarraPerfil, file: 'victor-cruz-guitarra-perfil_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con guitarra barroca, de perfil', en: 'With Baroque guitar, profile' } },
 ];
 ---
 <Base lang={lang} route="downloads" title={tr(ui.nav.downloads, lang)}
@@ -33,7 +31,7 @@ const photos = [
   <PageHead kicker={es ? 'Para prensa y programadores' : 'For press and presenters'} title={tr(ui.nav.downloads, lang)}
     lead={es ? 'Biografías, fotos en alta resolución y dossier. Las fotos pueden usarse para la difusión de conciertos citando a su autor.' : 'Biographies, high-resolution photos and press kit. Photos may be used to promote concerts, crediting the photographer.'} />
 
-  <section class="section">
+  <section class="section dl">
     <div class="wrap">
       <h2 class="title">Dossier</h2>
       <p class="btns" style="margin:1.4rem 0 0">
@@ -44,7 +42,7 @@ const photos = [
     </div>
   </section>
 
-  <section class="section section--alt" id="fotos">
+  <section class="section section--alt dl" id="fotos">
     <div class="wrap">
       <h2 class="title">{es ? 'Fotos' : 'Photos'}</h2>
       <div class="photos">
@@ -60,7 +58,7 @@ const photos = [
     </div>
   </section>
 
-  <section class="section" id="biografias">
+  <section class="section dl" id="biografias">
     <div class="wrap narrow">
       <h2 class="title">{es ? 'Biografías' : 'Biographies'}</h2>
       <p class="other">{es ? 'También en ' : 'Also in '}<a href={`${routes.downloads[other]}#biografias`} hreflang={other}>{tr(ui.otherLang, lang)}</a>.</p>
@@ -95,7 +93,8 @@ const photos = [
   });
 </script>
 <style>
-  .photos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-top: 2rem; }
+  .dl { padding-block: clamp(36px, 4.5vw, 56px); }
+  .photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 1.6rem; }
   .photos figure { margin: 0; }
   .photos img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
   .photos figcaption { font-family: var(--sans); font-size: 0.8rem; color: var(--gris); margin-top: 0.6rem; line-height: 1.5; }
