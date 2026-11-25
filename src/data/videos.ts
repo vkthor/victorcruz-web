@@ -9,10 +9,10 @@ export interface Video {
   credit?: T; // otro crédito en lugar de «Grabación y edición»
 }
 
-/** Orfeo: el vídeo de fragmentos está en preparación (mientras, un marcador). */
+/** Orfeo: escenas de *L’Orfeo* (Daroca, 2017), en tarjeta grande. */
 export const orfeo = {
-  yt: '', // poner aquí el id de YouTube cuando esté subido
-  title: 'Monteverdi · *L’Orfeo*',
+  yt: 'NV9-GlGfN20',
+  title: { es: 'Monteverdi · *L’Orfeo* (escenas)', en: 'Monteverdi · *L’Orfeo* (scenes)' },
   sub: { es: 'Orfeo · Los Músicos de Su Alteza, Luis Antonio González · 2017', en: 'Orfeo · Los Músicos de Su Alteza, Luis Antonio González · 2017' },
 };
 
