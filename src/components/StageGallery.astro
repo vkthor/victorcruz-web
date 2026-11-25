@@ -1,0 +1,86 @@
+---
+// Galería «En escena»: filas justificadas (cada foto ocupa un ancho proporcional a su formato, sin recortes)
+// y visor a pantalla completa al pulsar.
+import { Image, getImage } from 'astro:assets';
+import { stageRows } from '../data/stage';
+import { tr, ui, type Lang } from '../i18n';
+import { inline, plain } from '../utils';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const rows = await Promise.all(
+  stageRows.map((row) =>
+    Promise.all(
+      row.map(async (p) => ({
+        ...p,
+        ratio: p.img.width / p.img.height,
+        big: (await getImage({ src: p.img, width: Math.min(p.img.width, 1800), format: 'jpg', quality: 82 })).src,
+        caption: inline(tr(p.what, lang)),
+        alt: `Víctor Cruz. ${plain(tr(p.what, lang))}`,
+      })),
+    ),
+  ),
+);
+---
+<div class="stage">
+  {rows.map((row) => (
+    <div class="stage__row">
+      {row.map((p) => (
+        <figure style={`flex: ${p.ratio.toFixed(3)} 1 0`}>
+          <a href={p.big} data-stage data-caption={p.caption + (p.by ? ` · ${tr(ui.photo, lang)}: ${p.by}` : '')}>
+            <Image src={p.img} alt={p.alt} widths={[400, 700, 1000]} sizes="(max-width: 760px) 92vw, 33vw" quality={78} />
+          </a>
+          <figcaption>
+            <span set:html={p.caption} />
+            {p.by && <span class="credit">{tr(ui.photo, lang)}: {p.by}</span>}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  ))}
+</div>
+
+<dialog class="photobox" data-photobox aria-label={lang === 'es' ? 'Foto' : 'Photo'}>
+  <button class="photobox__close" type="button" data-photobox-close aria-label={tr(ui.close, lang)}>×</button>
+  <img data-photobox-img alt="" />
+  <p data-photobox-caption></p>
+</dialog>
+
+<script>
+  const box = document.querySelector<HTMLDialogElement>('[data-photobox]');
+  const img = box?.querySelector<HTMLImageElement>('[data-photobox-img]');
+  const cap = box?.querySelector<HTMLElement>('[data-photobox-caption]');
+  document.querySelectorAll<HTMLAnchorElement>('[data-stage]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      if (!box || !img || !cap) return;
+      e.preventDefault();
+      img.src = a.href;
+      img.alt = a.querySelector('img')?.alt ?? '';
+      cap.innerHTML = a.dataset.caption ?? '';
+      box.showModal();
+    });
+  });
+  box?.querySelector('[data-photobox-close]')?.addEventListener('click', () => box.close());
+  box?.addEventListener('click', (e) => { if (e.target === box || e.target === img) box.close(); });
+</script>
+
+<style>
+  .stage { display: grid; gap: 28px; margin-top: 2rem; }
+  .stage__row { display: flex; gap: 16px; align-items: flex-start; }
+  .stage figure { margin: 0; min-width: 0; }
+  .stage a { display: block; }
+  .stage img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+  .stage figcaption { font-family: var(--sans); font-size: 0.8rem; line-height: 1.45; color: var(--tinta); margin-top: 0.55rem; }
+  .stage figcaption .credit { display: block; color: var(--gris); font-size: 0.72rem; margin-top: 0.15rem; }
+  @media (max-width: 760px) {
+    .stage { gap: 22px; }
+    .stage__row { flex-direction: column; gap: 22px; }
+    .stage figure { flex: none !important; width: 100%; }
+  }
+  .photobox { max-width: 94vw; max-height: 94vh; padding: 0; border: 0; background: transparent; overflow: visible; }
+  .photobox::backdrop { background: rgba(18, 10, 12, 0.9); }
+  .photobox img { display: block; max-width: 94vw; max-height: 84vh; width: auto; height: auto; margin: 0 auto; cursor: zoom-out; }
+  .photobox p { font-family: var(--sans); font-size: 0.82rem; color: var(--marfil); text-align: center; margin: 0.8rem auto 0; max-width: 60em; }
+  .photobox__close { position: fixed; right: 16px; top: 16px; width: 42px; height: 42px; border: 1px solid rgba(241, 227, 200, 0.6); border-radius: 50%; background: transparent; color: var(--marfil); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .photobox__close:hover { background: var(--marfil); color: var(--vino); }
+</style>

@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
+import StageGallery from '../components/StageGallery.astro';
 import { tr, ui, url, type Lang } from '../i18n';
 import { inline } from '../utils';
 import { bioLong } from '../data/bio';
@@ -34,6 +35,12 @@ const es = lang === 'es';
           <a class="btn" href={url('downloads', lang)}>{es ? 'Descargar biografía y fotos' : 'Download biography and photos'}</a>
         </p>
       </div>
+    </div>
+  </section>
+  <section class="section section--alt" id="escena">
+    <div class="wrap">
+      <h2 class="title">{es ? 'En escena' : 'On stage'}</h2>
+      <StageGallery lang={lang} />
     </div>
   </section>
 </Base>
