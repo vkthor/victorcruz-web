@@ -4,9 +4,10 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import VideoCard from '../components/VideoCard.astro';
 import { tr, ui, type Lang } from '../i18n';
-import { inline } from '../utils';
+import { inline, plain } from '../utils';
 import { site } from '../data/site';
 import { projects } from '../data/projects';
+import { dossiersOf } from '../data/dossiers';
 import { projectVideos, spanish } from '../data/videos';
 import jdzPlaya from '../assets/fotos/jdz-playa.jpg';
 import duo from '../assets/fotos/duo-del-zefiro.jpg';
@@ -15,6 +16,13 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const es = lang === 'es';
 const { jdz, duo: duoP, veladas, cantar } = projects;
+// Botones de dossier del proyecto, en el idioma de la página (o en español si no hay otro).
+const dbtn = (id: Parameters<typeof dossiersOf>[0]) => dossiersOf(id).items.map((i) => ({
+  href: es ? i.es : i.en ?? i.es,
+  label: dossiersOf(id).items.length > 1
+    ? `Dossier: ${plain(tr(i.label, lang))}${!es && !i.en ? ' (Spanish)' : ''}`
+    : `Dossier (PDF${!es && !i.en ? ', Spanish' : ''})`,
+}));
 const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === id)!;
 ---
 <Base lang={lang} route="projects" title={tr(ui.nav.projects, lang)}
@@ -34,7 +42,7 @@ const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === 
         <h2 class="title">{jdz.name}</h2>
         <div class="prose">{jdz.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
         <ul class="pquotes">{jdz.quotes.map((q) => <li>{tr(q.q, lang)} <a href={q.url} rel="noopener">{q.src}</a></li>)}</ul>
-        <p class="btns"><a class="btn btn--solid" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a></p>
+        <p class="btns"><a class="btn btn--solid" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a>{dbtn('jdz').map((d) => <a class="btn" href={d.href} target="_blank" rel="noopener">{d.label}</a>)}</p>
       </div>
     </div>
   </section>
@@ -49,7 +57,7 @@ const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === 
         <p class="eyebrow">{tr(duoP.role, lang)}</p>
         <h2 class="title">{duoP.name}</h2>
         <div class="prose">{duoP.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
-        <p class="btns"><a class="btn" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a></p>
+        <p class="btns">{dbtn('duo').map((d) => <a class="btn" href={d.href} target="_blank" rel="noopener">{d.label}</a>)}<a class="btn" href={es ? site.jdz : site.jdzEn} rel="noopener">jacarasdelzefiro.es ↗</a></p>
       </div>
     </div>
   </section>
@@ -61,6 +69,7 @@ const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === 
         <p class="eyebrow">{tr(veladas.role, lang)}</p>
         <h2 class="title">{tr(veladas.name, lang)}</h2>
         <div class="prose">{veladas.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
+        <p class="btns">{dbtn('veladas').map((d) => <a class="btn" href={d.href} target="_blank" rel="noopener">{d.label}</a>)}</p>
       </div>
     </div>
   </section>
@@ -74,7 +83,7 @@ const vid = (id: string) => [...projectVideos, ...spanish].find((v) => v.yt === 
         <p class="eyebrow">{tr(cantar.role, lang)}</p>
         <h2 class="title">{cantar.name}</h2>
         <div class="prose">{cantar.text[lang].map((p) => <p set:html={inline(p)} />)}</div>
-        <p class="btns"><a class="btn" href={cantar.dossier} target="_blank" rel="noopener">{es ? 'Dossier del proyecto (PDF)' : 'Project dossier (PDF, Spanish)'}</a></p>
+        <p class="btns">{dbtn('cantar').map((d) => <a class="btn" href={d.href} target="_blank" rel="noopener">{d.label}</a>)}</p>
       </div>
     </div>
     <div class="wrap"><p class="vnote">{tr(ui.videoConsent, lang)}</p></div>

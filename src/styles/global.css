@@ -63,7 +63,9 @@ strong, b { font-weight: 500; }
 .btn--solid:hover { background: var(--vino-2); border-color: var(--vino-2); }
 
 /* Secciones */
-.section { padding-block: clamp(64px, 8vw, 104px); }
+.section { padding-block: clamp(36px, 4.5vw, 56px); }
+.section > .wrap:last-child > :last-child, .section > .wrap:last-child > .prose:last-child > :last-child { margin-bottom: 0; }
+.section > .wrap:first-child > :first-child, .section > .wrap:first-child > .prose:first-child > :first-child { margin-top: 0; }
 .section--alt { background: var(--crema); }
 .section--line { border-top: 1px solid var(--linea); }
 .title { font-size: clamp(2.1rem, 3.3vw, 2.85rem); color: var(--vino); margin-bottom: 0.4em; }
@@ -192,7 +194,7 @@ a.linkbtn { display: inline; }
 
 /* Pie con contacto */
 .site-footer { background: var(--vino); color: var(--marfil); }
-.contact { display: flex; gap: clamp(28px, 5vw, 64px); align-items: center; justify-content: center; padding: clamp(64px, 8vw, 96px) var(--gutter); }
+.contact { display: flex; gap: clamp(28px, 5vw, 64px); align-items: center; justify-content: center; padding: clamp(48px, 6vw, 72px) var(--gutter); }
 .contact .logo { height: 150px; width: auto; flex-shrink: 0; }
 .contact h2 { font-family: var(--sans); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
 .contact .mail { display: inline-block; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 300; margin: 0.5rem 0 0.4rem; text-decoration: none; border-bottom: 1px solid rgba(241, 227, 200, 0.35); }
@@ -200,9 +202,9 @@ a.linkbtn { display: inline; }
 .contact .soc { font-family: var(--sans); font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; margin: 0.8rem 0 0; }
 .contact .soc a { text-decoration: none; padding: 0.4rem 0; display: inline-block; }
 .contact .soc a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem 1.4rem; padding: 18px var(--gutter); border-top: 1px solid rgba(241, 227, 200, 0.18); font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.05em; }
+.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.6rem 1.4rem; padding: 18px var(--gutter); border-top: 1px solid rgba(241, 227, 200, 0.18); font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.05em; }
 .footer-bottom nav { display: flex; flex-wrap: wrap; gap: 0.2rem 1.2rem; }
-.footer-bottom a { text-decoration: none; padding: 0.35rem 0; display: inline-block; }
+.footer-bottom a, .footer-bottom > span { text-decoration: none; padding: 0.35rem 0; display: inline-block; line-height: 1.4; }
 .footer-bottom a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 1000px) {
