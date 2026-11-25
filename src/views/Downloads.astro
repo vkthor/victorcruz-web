@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { routes, tr, ui, type Lang } from '../i18n';
 import { inline, plain } from '../utils';
-import { bioLong, bioMedium, bioShort } from '../data/bio';
+import { bioLong } from '../data/bio';
 import { dossiers } from '../data/dossiers';
 import tiorba from '../assets/fotos/tiorba.jpg';
 import guitarraAzul from '../assets/fotos/guitarra-azul.jpg';
@@ -15,11 +15,7 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const es = lang === 'es';
 const other: Lang = es ? 'en' : 'es';
-const bios = [
-  { id: 'larga', h: { es: 'Biografía completa', en: 'Full biography' }, n: '', paras: bioLong[lang] },
-  { id: 'media', h: { es: 'Biografía media', en: 'Medium biography' }, n: '', paras: [bioMedium[lang]] },
-  { id: 'corta', h: { es: 'Biografía corta', en: 'Short biography' }, n: '', paras: [bioShort[lang]] },
-].map((b) => ({ ...b, n: String(b.paras.join(' ').split(/\s+/).length) }));
+const words = bioLong[lang].join(' ').split(/\s+/).length;
 const photos = [
   { img: tiorba, file: 'victor-cruz-tiorba-y-guitarra_Noria-Producciones.jpg', by: 'Noria Producciones', alt: { es: 'Con tiorba y guitarra barroca', en: 'With theorbo and Baroque guitar' } },
   { img: primerPlano, file: 'victor-cruz-retrato_Pablo-F-Juarez.jpg', by: 'Pablo F. Juárez', alt: { es: 'Retrato', en: 'Portrait' } },
@@ -28,14 +24,43 @@ const photos = [
 ];
 ---
 <Base lang={lang} route="downloads" title={tr(ui.nav.downloads, lang)}
-  description={es ? 'Biografías de Víctor Cruz en tres extensiones, fotos en alta resolución y dossier para prensa y programadores.' : 'Biographies of Víctor Cruz in three lengths, high-resolution photos and press kit for press and presenters.'}>
+  description={es ? 'Fotos en alta resolución, biografía y dossieres de Víctor Cruz y sus proyectos, para prensa y programadores.' : 'High-resolution photos, biography and press kits of Víctor Cruz and his projects, for press and presenters.'}>
   <PageHead kicker={es ? 'Para prensa y programadores' : 'For press and presenters'} title={tr(ui.nav.downloads, lang)}
-    lead={es ? 'Biografías, fotos en alta resolución y dossier. Las fotos pueden usarse para la difusión de conciertos citando a su autor.' : 'Biographies, high-resolution photos and press kit. Photos may be used to promote concerts, crediting the photographer.'} />
+    lead={es ? 'Fotos en alta resolución, biografía y dossieres. Las fotos pueden usarse para la difusión de conciertos citando a su autor.' : 'High-resolution photos, biography and press kits. Photos may be used to promote concerts, crediting the photographer.'} />
 
-  <section class="section">
+  <section class="section" id="fotos">
+    <div class="wrap">
+      <h2 class="title">{es ? 'Fotos' : 'Photos'}</h2>
+      <div class="photos">
+        {photos.map((p) => (
+          <figure>
+            <a href={`/descargas/fotos/${p.file}`} download>
+              <Image src={p.img} alt={`Víctor Cruz. ${tr(p.alt, lang)}`} widths={[300, 500]} sizes="(max-width: 760px) 50vw, 240px" quality={74} />
+            </a>
+            <figcaption>{tr(ui.photo, lang)}: {p.by}<br /><a class="more" href={`/descargas/fotos/${p.file}`} download>{es ? 'Descargar JPG' : 'Download JPG'}</a></figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="biografias">
+    <div class="wrap narrow">
+      <div class="head-row" style="margin-bottom:0.5rem">
+        <h2 class="title">{tr(ui.nav.bio, lang)}</h2>
+        <button type="button" class="copy" data-copy="bio-larga">{es ? 'Copiar texto' : 'Copy text'}</button>
+      </div>
+      <p class="other">{words} {es ? 'palabras' : 'words'} · {es ? 'También en ' : 'Also in '}<a href={`${routes.downloads[other]}#biografias`} hreflang={other}>{tr(ui.otherLang, lang)}</a></p>
+      <div class="prose" id="bio-larga" data-plain={bioLong[lang].map(plain).join('\n\n')}>
+        {bioLong[lang].map((p) => <p set:html={inline(p)} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dossier">
     <div class="wrap">
       <h2 class="title">Dossier</h2>
-      <p class="btns" style="margin:1.4rem 0 0">
+      <p class="btns" style="margin:1.2rem 0 0">
         <a class="btn btn--solid" href="/dossieresp.pdf" download>Dossier (PDF, español)</a>
         <a class="btn" href="/dossiereng.pdf" download>Press kit (PDF, English)</a>
       </p>
@@ -63,39 +88,6 @@ const photos = [
     </div>
   </section>
 
-  <section class="section section--alt" id="fotos">
-    <div class="wrap">
-      <h2 class="title">{es ? 'Fotos' : 'Photos'}</h2>
-      <div class="photos">
-        {photos.map((p) => (
-          <figure>
-            <a href={`/descargas/fotos/${p.file}`} download>
-              <Image src={p.img} alt={`Víctor Cruz. ${tr(p.alt, lang)}`} widths={[300, 500]} sizes="(max-width: 760px) 50vw, 240px" quality={74} />
-            </a>
-            <figcaption>{tr(ui.photo, lang)}: {p.by}<br /><a class="more" href={`/descargas/fotos/${p.file}`} download>{es ? 'Descargar JPG' : 'Download JPG'}</a></figcaption>
-          </figure>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="biografias">
-    <div class="wrap narrow">
-      <h2 class="title">{es ? 'Biografías' : 'Biographies'}</h2>
-      <p class="other">{es ? 'También en ' : 'Also in '}<a href={`${routes.downloads[other]}#biografias`} hreflang={other}>{tr(ui.otherLang, lang)}</a>.</p>
-      {bios.map((b) => (
-        <article class="biobox">
-          <header>
-            <h3>{tr(b.h, lang)} <span>· {b.n} {es ? 'palabras' : 'words'}</span></h3>
-            <button type="button" class="copy" data-copy={`bio-${b.id}`}>{es ? 'Copiar' : 'Copy'}</button>
-          </header>
-          <div class="prose" id={`bio-${b.id}`} data-plain={b.paras.map(plain).join('\n\n')}>
-            {b.paras.map((p) => <p set:html={inline(p)} />)}
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
 </Base>
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
@@ -128,11 +120,7 @@ const photos = [
   .pdoss__links a { color: var(--vino); }
   .other { font-family: var(--sans); font-size: 0.9rem; color: var(--gris); }
   .other a { color: var(--vino); }
-  .biobox { margin-top: 2.4rem; padding-top: 1.4rem; border-top: 1px solid var(--linea); }
-  .biobox header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
-  .biobox h3 { font-size: 1.5rem; color: var(--vino); }
-  .biobox h3 span { font-family: var(--sans); font-size: 0.8rem; color: var(--gris); letter-spacing: 0.04em; }
-  .biobox .prose { font-size: 1.08rem; }
+  #bio-larga { font-size: 1.08rem; margin-top: 1.4rem; }
   .copy { font-family: var(--sans); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vino); background: none; border: 1px solid var(--vino); padding: 0.5rem 0.9rem; cursor: pointer; flex-shrink: 0; }
   .copy:hover { background: var(--vino); color: var(--marfil); }
   @media (max-width: 1000px) { .photos { grid-template-columns: repeat(3, 1fr); } .pdoss { grid-template-columns: 1fr 1fr; } }
