@@ -18,7 +18,7 @@ export const site = {
     'https://www.wikidata.org/wiki/Q130535337',
   ],
   // Cloudflare Web Analytics: pegar aquí el token al darlo de alta (sin cookies). Vacío = sin analítica.
-  cloudflareToken: '',
+  cloudflareToken: 'f962d9e68d7948c9871556ef3a2fd4af',
   // Titular del aviso legal (LSSI).
   owner: {
     name: 'Víctor Cruz García',
