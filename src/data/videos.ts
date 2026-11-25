@@ -31,10 +31,10 @@ export const spanish: Video[] = [
 ];
 
 export const projectVideos: Video[] = [
-  { yt: 'FFrh3yKsJ9c', title: { es: 'Purcell · *When the world first knew creation*', en: 'Purcell · *When the world first knew creation*' }, sub: { es: 'Dúo del Zéfiro · *Don Quixote* (1694)', en: 'Dúo del Zéfiro · *Don Quixote* (1694)' } },
+  { yt: 'FFrh3yKsJ9c', title: { es: 'Purcell · *When the world first knew creation*', en: 'Purcell · *When the world first knew creation*' }, sub: { es: 'Dúo del Zéfiro · *Don Quixote* (1694)', en: 'Dúo del Zéfiro · *Don Quixote* (1694)' }, own: true },
   { yt: 'Is-gSN_Eh0k', title: { es: '*Una velada musical en Baden-Baden* (documental)', en: '*A Musical Evening in Baden-Baden* (documentary)' }, sub: { es: 'Con Beatriz González Calderón y Jesús Campo · 2026', en: 'With Beatriz González Calderón and Jesús Campo · 2026' }, own: true },
-  { yt: 'VCGR9iiy68E', title: 'Bach · *Stürze zu Boden*, BWV 126', sub: { es: 'El Cantar de las Cuerdas, con Blanca Martín · 2026', en: 'El Cantar de las Cuerdas, with Blanca Martín · 2026' } },
-  { yt: 'zJk7q5321M4', title: '*Toda la muerte en mi vida*', sub: { es: 'Teaser · con Beatriz González Calderón y Héctor Eliel Márquez · 2025', en: 'Teaser · with Beatriz González Calderón and Héctor Eliel Márquez · 2025' }, own: true },
+  { yt: 'VCGR9iiy68E', title: 'Bach · *Stürze zu Boden*, BWV 126', sub: { es: 'El Cantar de las Cuerdas, con Blanca Martín · 2026', en: 'El Cantar de las Cuerdas, with Blanca Martín · 2026' }, own: true },
+  { yt: 'zJk7q5321M4', title: '*Toda la muerte en mi vida*', sub: { es: 'Teaser · con Beatriz González Calderón y Héctor Eliel Márquez · 2025', en: 'Teaser · with Beatriz González Calderón and Héctor Eliel Márquez · 2025' } },
   { yt: '5zvM3trAELU', title: { es: 'Jacchini · Sonata en do mayor, op. 3 n.º 10', en: 'Jacchini · Sonata in C major, op. 3 no. 10' }, sub: { es: 'El Cantar de las Cuerdas: guitarra barroca y violonchelo · 2026', en: 'El Cantar de las Cuerdas: Baroque guitar and cello · 2026' }, own: true },
 ];
 
@@ -63,7 +63,7 @@ export const productionClients: T = {
 /** Vídeos propios (grabación y edición suyas): ejemplos para «Más allá del canto». */
 export const ownWork: Video[] = [
   { yt: 'JUHHyPGmzJc', title: '«Ríu ríu chíu»', sub: { es: 'Cancionero de Uppsala · 2020', en: 'Uppsala Songbook · 2020' }, own: true },
-  { yt: 'eNbDNMDE81k', title: '*Don Diego de Granada*', sub: { es: 'Tráiler del estreno · Festival Música Sur · 2022', en: 'Premiere trailer · Música Sur Festival · 2022' }, own: true, credit: { es: 'Realización y edición: Víctor Cruz', en: 'Directed and edited by Víctor Cruz' } },
+  { yt: 'eNbDNMDE81k', title: '*Don Diego de Granada*', sub: { es: 'Tráiler del estreno · Festival Música Sur · 2022', en: 'Premiere trailer · Música Sur Festival · 2022' }, own: true, credit: { es: 'Realización y edición: Víctor Cruz', en: 'Video production and editing by Víctor Cruz' } },
   { yt: 'dbZwL5-9QVo', title: '*Una voz interior*', sub: { es: 'Teaser · con Beatriz González Calderón y Héctor Eliel Márquez · 2023', en: 'Teaser · with Beatriz González Calderón and Héctor Eliel Márquez · 2023' }, own: true },
   { yt: '2quWhg6KmRk', title: '*La bestia que pedía amor a gritos desde el centro del mundo*', sub: 'Teaser · 2025', own: true },
 ];
@@ -72,6 +72,7 @@ export const wookiee: Video = {
   yt: 'bXEAwV4UdY8',
   title: '*Lamento della wookiee*',
   sub: { es: 'Monteverdi + Star Wars · 2020', en: 'Monteverdi + Star Wars · 2020' },
+  own: true,
 };
 
 export const elGallineroTikTok = 'https://www.tiktok.com/@elgallinerorealpodcast/video/7458613013956857121';
