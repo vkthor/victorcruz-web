@@ -60,7 +60,7 @@ const jsonld = person && {
 };
 // Primera visita a la portada en español desde un navegador que no está en español (ni catalán, gallego o euskera):
 // se pasa a la versión inglesa. No afecta a buscadores ni a quien ya eligió idioma con el botón ES · EN.
-const langRedirect = route === 'home' && lang === 'es';
+const langRedirect = route === 'home' && lang === 'es' && !noindex;
 ---
 <!doctype html>
 <html lang={lang}>
