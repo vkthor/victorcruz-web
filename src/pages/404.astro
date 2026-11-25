@@ -2,6 +2,12 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base lang="es" route="home" title="Página no encontrada" description="Página no encontrada" noindex>
+  <script is:inline>
+    // Las direcciones de la web antigua (por ejemplo /grabacionescne) siguen en old.victorcruz.es.
+    if (/(^|\.)victorcruz\.es$/.test(location.hostname) && location.hostname !== 'old.victorcruz.es') {
+      location.replace('https://old.victorcruz.es' + location.pathname + location.search + location.hash);
+    }
+  </script>
   <section class="section">
     <div class="wrap narrow" style="text-align:center">
       <p class="eyebrow">404</p>
