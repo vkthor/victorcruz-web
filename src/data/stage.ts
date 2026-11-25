@@ -20,10 +20,10 @@ export const stageRows: StagePhoto[][] = [
   [
     { img: dido1, what: s('Eneas en *Dido y Eneas* · Hippocampus, 2022', 'Aeneas in *Dido and Aeneas* · Hippocampus, 2022'), by: 'Enrique Martín' },
     { img: apollo, what: s('Apolo en *Apollo e Dafne* de Händel · Escuela Superior de Música Reina Sofía', 'Apollo in Handel’s *Apollo e Dafne* · Reina Sofía School of Music'), by: 'Kirill Baskhirov' },
-    { img: italiana, what: s('Taddeo en *L’italiana in Algeri*, con Karina Demurova · Orquesta Ciudad de Granada, Giancarlo Andretta, 2019', 'Taddeo in *L’italiana in Algeri*, with Karina Demurova · Orquesta Ciudad de Granada, Giancarlo Andretta, 2019'), by: 'Maxine Caulfield' },
+    { img: italiana, what: s('Taddeo en *L’italiana in Algeri*, con Karina Demurova · Orquesta Ciudad de Granada, Giancarlo Andretta, 2019', 'Taddeo in *L’italiana in Algeri*, with Karina Demurova · Orquesta Ciudad de Granada, Giancarlo Andretta, 2019'), by: 'Kensuke Aida' },
   ],
   [
-    { img: mesias, what: s('*El Mesías* · Orquesta Sinfónica de Galicia, Carlos Mena, 2018', '*Messiah* · Galicia Symphony Orchestra, Carlos Mena, 2018') },
+    { img: mesias, what: s('*El Mesías* · Orquesta Sinfónica de Galicia, Carlos Mena, 2018', '*Messiah* · Galicia Symphony Orchestra, Carlos Mena, 2018'), by: 'Tomoyo Daidouji' },
     { img: dido2, what: s('*Dido y Eneas* · Hippocampus, 2022', '*Dido and Aeneas* · Hippocampus, 2022'), by: 'Enrique Martín' },
     { img: segreto, what: s('Gil en *Il segreto di Susanna*, con Elena Simionov · La voz humana', 'Gil in *Il segreto di Susanna*, with Elena Simionov · La voz humana'), by: 'Maxine Caulfield' },
   ],
