@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "miniaturas": "node scripts/miniaturas.mjs",
+    "og": "node scripts/og.mjs",
     "dossier": "node scripts/dossier.mjs"
   },
   "dependencies": {

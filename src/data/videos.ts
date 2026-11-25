@@ -63,7 +63,7 @@ export const productionClients: T = {
 /** Vídeos propios (grabación y edición suyas): ejemplos para «Más allá del canto». */
 export const ownWork: Video[] = [
   { yt: 'JUHHyPGmzJc', title: '«Ríu ríu chíu»', sub: { es: 'Cancionero de Uppsala · 2020', en: 'Uppsala Songbook · 2020' }, own: true },
-  { yt: 'eNbDNMDE81k', title: '*Don Diego de Granada*', sub: { es: 'Tráiler del estreno · Festival Música Sur · 2022', en: 'Premiere trailer · Música Sur Festival · 2022' }, own: true, credit: { es: 'Realización y edición: Víctor Cruz', en: 'Video production and editing by Víctor Cruz' } },
+  { yt: 'eNbDNMDE81k', title: '*Don Diego de Granada*', sub: { es: 'Tráiler del estreno · Festival Música Sur · 2022', en: 'Premiere trailer · Música Sur Festival · 2022' }, own: true, credit: { es: 'Realización y edición: Víctor Cruz', en: 'Edited by Víctor Cruz' } },
   { yt: 'dbZwL5-9QVo', title: '*Una voz interior*', sub: { es: 'Teaser · con Beatriz González Calderón y Héctor Eliel Márquez · 2023', en: 'Teaser · with Beatriz González Calderón and Héctor Eliel Márquez · 2023' }, own: true },
   { yt: '2quWhg6KmRk', title: '*La bestia que pedía amor a gritos desde el centro del mundo*', sub: 'Teaser · 2025', own: true },
 ];

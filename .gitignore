@@ -3,3 +3,4 @@ _privado/
 node_modules/
 dist/
 .astro/
+og-tmp.png
