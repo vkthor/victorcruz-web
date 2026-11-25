@@ -26,7 +26,8 @@ interface Props {
 const { lang, route, title, description, image, person = false, noindex = false } = Astro.props;
 const siteTitle = `Víctor Cruz · ${tr(ui.role, lang)}`;
 const fullTitle = title ? `${title} · Víctor Cruz` : siteTitle;
-const og = await getImage({ src: image ?? ogDefault, width: 1200, format: 'jpg', quality: 82 });
+const ogSrc = image ?? ogDefault;
+const og = await getImage({ src: ogSrc, width: Math.min(ogSrc.width, 1200), format: 'jpg', quality: 85 });
 const canonical = new URL(routes[route][lang], Astro.site);
 const alternates = (['es', 'en'] as Lang[]).map((l) => ({ l, href: new URL(routes[route][l], Astro.site).href }));
 const home = new URL('/', Astro.site).href;
@@ -98,12 +99,12 @@ const langRedirect = route === 'home' && lang === 'es' && !noindex;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:image" content={new URL(og.src, Astro.site).href} />
-    <meta property="og:image:width" content={String(og.attributes.width ?? 1200)} />
-    <meta property="og:image:height" content={String(og.attributes.height ?? 630)} />
-    <meta property="og:image:alt" content={lang === 'es' ? 'Víctor Cruz con tiorba y guitarra barroca' : 'Víctor Cruz with theorbo and Baroque guitar'} />
+    <meta property="og:image:width" content={String(og.attributes.width ?? ogSrc.width)} />
+    <meta property="og:image:height" content={String(og.attributes.height ?? ogSrc.height)} />
+    <meta property="og:image:alt" content={lang === 'es' ? 'Víctor Cruz, barítono · Música antigua' : 'Víctor Cruz, baritone · Early music'} />
     <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_GB'} />
     <meta property="og:locale:alternate" content={lang === 'es' ? 'en_GB' : 'es_ES'} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
     <slot name="head" />
   </head>

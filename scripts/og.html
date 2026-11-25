@@ -1,22 +1,19 @@
 <!doctype html>
-<!-- Imagen para compartir (src/assets/og.jpg, 1200×630). Se genera con «npm run og».
-     La foto va en el centro porque WhatsApp y otras apps recortan un cuadrado central. -->
+<!-- Imagen para compartir (src/assets/og.jpg, 600×600). Se genera con «npm run og».
+     Cuadrada y sólo con el logo: WhatsApp y otras apps la muestran como miniatura pequeña y no hay nada que recortar. -->
 <html>
 <head>
 <meta charset="utf-8">
 <style>
   @font-face { font-family: 'Jost'; src: url('../node_modules/@fontsource-variable/jost/files/jost-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
   html, body { margin: 0; }
-  body { width: 1200px; height: 630px; background: #f7f3ec; position: relative; overflow: hidden; }
-  .photo { position: absolute; left: 50%; top: 0; height: 630px; transform: translateX(-50%); }
-  .logo { position: absolute; left: 52px; top: 50%; width: 200px; transform: translateY(-50%); }
-  .tag { position: absolute; right: 44px; top: 50%; transform: translateY(-50%); width: 230px; font: 500 16px/2.1 'Jost', sans-serif; letter-spacing: 0.32em; text-transform: uppercase; color: #4a1020; text-align: center; }
-  .tag i { display: block; width: 40px; height: 1px; background: #4a1020; opacity: 0.4; margin: 10px auto; }
+  body { width: 600px; height: 600px; background: #f7f3ec; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .logo { width: 270px; margin-left: -18px; }
+  .tag { margin-top: 34px; font: 500 15px/1 'Jost', sans-serif; letter-spacing: 0.32em; text-transform: uppercase; color: #4a1020; }
 </style>
 </head>
 <body>
   <img class="logo" src="../marca/png/logo-vino-1200.png" alt="">
-  <img class="photo" src="../src/assets/fotos/tiorba.jpg" alt="">
-  <div class="tag">Barítono<i></i>Música antigua</div>
+  <div class="tag">Barítono · Música antigua</div>
 </body>
 </html>
