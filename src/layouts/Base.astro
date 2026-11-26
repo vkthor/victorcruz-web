@@ -12,6 +12,7 @@ import { routes, tr, ui, type Lang, type RouteKey } from '../i18n';
 import { site } from '../data/site';
 import { bioShort } from '../data/bio';
 import ogDefault from '../assets/og.jpg';
+import retrato from '../assets/fotos/primer-plano.jpg';
 import { getImage } from 'astro:assets';
 
 interface Props {
@@ -24,13 +25,16 @@ interface Props {
   noindex?: boolean;
 }
 const { lang, route, title, description, image, person = false, noindex = false } = Astro.props;
-const siteTitle = `Víctor Cruz · ${tr(ui.role, lang)}`;
-const fullTitle = title ? `${title} · Víctor Cruz` : siteTitle;
+// Títulos: «Víctor Cruz, barítono» delante, para no confundirse con otros Víctor Cruz en los buscadores.
+const who = `Víctor Cruz, ${tr(ui.role, lang).toLowerCase()}`;
+const siteTitle = `${who} · ${lang === 'es' ? 'Música antigua' : 'Early music'}`;
+const fullTitle = title ? `${who} · ${title}` : siteTitle;
 const ogSrc = image ?? ogDefault;
 const og = await getImage({ src: ogSrc, width: Math.min(ogSrc.width, 1200), format: 'jpg', quality: 85 });
 const canonical = new URL(routes[route][lang], Astro.site);
 const alternates = (['es', 'en'] as Lang[]).map((l) => ({ l, href: new URL(routes[route][l], Astro.site).href }));
 const home = new URL('/', Astro.site).href;
+const portrait = person ? await getImage({ src: retrato, width: 1200, format: 'jpg', quality: 85 }) : null;
 
 const jsonld = person && {
   '@context': 'https://schema.org',
@@ -42,11 +46,12 @@ const jsonld = person && {
       jobTitle: tr(ui.role, lang),
       description: bioShort[lang],
       url: home,
-      image: new URL(og.src, Astro.site).href,
+      image: portrait && new URL(portrait.src, Astro.site).href,
       email: `mailto:${site.email}`,
-      birthPlace: { '@type': 'Place', name: 'Guadix, Granada, España' },
+      birthPlace: { '@type': 'Place', name: 'Guadix, Granada, España', sameAs: 'https://www.wikidata.org/wiki/Q244324' },
+      alumniOf: { '@type': 'CollegeOrUniversity', name: 'Real Conservatorio Superior de Música de Granada', sameAs: 'https://www.wikidata.org/wiki/Q20785329' },
       nationality: { '@type': 'Country', name: 'España' },
-      knowsAbout: lang === 'es' ? ['Música antigua', 'Música barroca', 'Canto'] : ['Early music', 'Baroque music', 'Singing'],
+      knowsAbout: lang === 'es' ? ['Música antigua', 'Música barroca', 'Canto', 'Tiorba', 'Guitarra barroca'] : ['Early music', 'Baroque music', 'Singing', 'Theorbo', 'Baroque guitar'],
       sameAs: site.sameAs,
     },
     {
@@ -57,6 +62,16 @@ const jsonld = person && {
       founder: { '@id': `${home}#person` },
     },
     { '@type': 'WebSite', '@id': `${home}#website`, url: home, name: 'Víctor Cruz', inLanguage: ['es', 'en'], publisher: { '@id': `${home}#person` } },
+    // Biografía = página de perfil de la persona; portada = página web sobre ella.
+    {
+      '@type': route === 'bio' ? 'ProfilePage' : 'WebPage',
+      '@id': `${canonical.href}#webpage`,
+      url: canonical.href,
+      name: fullTitle,
+      inLanguage: lang,
+      isPartOf: { '@id': `${home}#website` },
+      [route === 'bio' ? 'mainEntity' : 'about']: { '@id': `${home}#person` },
+    },
   ],
 };
 // Primera visita a la portada en español desde un navegador que no está en español (ni catalán, gallego o euskera):

@@ -16,6 +16,8 @@ export const site = {
     'https://www.operabase.com/victor-cruz-a2116976',
     'https://bachtrack.com/performer/victor-cruz',
     'https://www.wikidata.org/wiki/Q130535337',
+    'https://musicbrainz.org/artist/728e56e4-96e4-4a73-aaf2-6e91f74ed480',
+    'https://www.discogs.com/artist/12828179',
   ],
   // Cloudflare Web Analytics: pegar aquí el token al darlo de alta (sin cookies). Vacío = sin analítica.
   cloudflareToken: 'f962d9e68d7948c9871556ef3a2fd4af',
