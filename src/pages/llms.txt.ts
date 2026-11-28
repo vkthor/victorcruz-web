@@ -17,7 +17,7 @@ export const GET: APIRoute = () => {
   const press = [heroQuote, ...reviews]
     .flatMap((r) => [r, ...(r.more ?? [])].map((c) => ({ ...c, author: r.author })))
     .sort((a, b) => b.date.localeCompare(a.date))
-    .map((c) => `- ${c.date} · ${c.outlet} · ${c.author}: ${plain(tr(c.about, 'en'))}${c.url ? ` — ${c.url}` : ' (print only)'}`);
+    .map((c) => `- ${c.outlet} · ${c.author}: ${plain(tr(c.about, 'en'))}${c.url ? ` — ${c.url}` : ' (print only)'}`);
 
   const proj = [projects.jdz, projects.duo, projects.veladas, projects.cantar].map(
     (p) => `- ${plain(tr(p.name, 'en'))}: ${plain(tr(p.short, 'en'))}`,
