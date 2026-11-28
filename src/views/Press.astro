@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHead from '../components/PageHead.astro';
 import { tr, ui, url, type Lang } from '../i18n';
 import { inline, quote } from '../utils';
-import { heroQuote, reviews, pressDate, type Review } from '../data/press';
+import { heroQuote, reviews, type Review } from '../data/press';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -27,7 +27,7 @@ const all: Review[] = [heroQuote, ...reviews];
                   {es && c.es && <p class="tr" set:html={inline(c.es)} />}
                 </blockquote>
                 <figcaption>
-                  <span class="who"><b>{c.outlet}</b>{c.country && ` (${tr(c.country, lang)})`}, {pressDate(c.date, lang)}</span>
+                  <span class="who"><b>{c.outlet}</b>{c.country && ` (${tr(c.country, lang)})`}</span>
                   <span class="about" set:html={inline(tr(c.about, lang))} />
                   {c.url && <a class="more" href={c.url} rel="noopener">{c.paid ? (es ? 'Leer en Kiosko y Más (de pago)' : 'Read on Kiosko y Más (paywall)') : tr(ui.readReview, lang)} ↗</a>}
                 </figcaption>
